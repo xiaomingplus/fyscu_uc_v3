@@ -1,0 +1,64 @@
+body {
+    padding: 0;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-color: #EEEEEE;
+}
+.container{
+    padding:20px;
+    margin: 0 auto;
+}
+.header{
+    padding-top:2.5rem;
+    background-color: rgb(11, 117, 171);
+}
+hr{
+    margin-top: 0;
+}
+a:focus {
+    outline:none;
+    -moz-outline:none;
+}
+.am-nav-tabs > li.am-active > a, .am-nav-tabs > li.am-active > a:hover, .am-nav-tabs > li.am-active > a:focus {
+    border-top:2px solid #ccc;
+    background-color: #eee;
+    font-weight: 600;
+}
+.header h1{
+    color:#fff;
+    text-align: center;
+}
+a {
+    color: #00B7FF;
+}
+.form-control{
+    margin: 5px 0;
+    height: 40px;
+    font-size: 1.2em;
+}
+.form-signin>a{
+    padding: 10px 0;
+    display: block;
+    margin: 5px 0;
+    text-decoration: none;
+    color: #3276B1;
+}
+.form-signin>a:hover{
+    color: #00b7ff;
+}
+@media(max-width: 479px) {
+    body{
+        padding: 0;
+    }
+    .container{
+
+        width: 100% !important;
+    }
+}
+@media(min-width: 480px) {
+    .container{
+        width: 480px !important;
+    }
+    .form-control{
+        margin: 10px 0;
+    }
+}
