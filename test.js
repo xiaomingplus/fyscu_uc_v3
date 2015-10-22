@@ -48,6 +48,9 @@ var url = 'http://127.0.0.1:9527';
 //var nodedb = require('./node_modules/nodedb')({
 //  'path': './db'
 //});
+//nodedb.query('18688124774', function (e, r) {
+//  console.log(e,r);
+//});
 //console.log(nodedb);
 //id: 30,
 //  uid: 1033,
