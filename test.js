@@ -2,7 +2,7 @@
  * Created by lanhao on 15/10/17.
  */
 var request = require('request');
-
+var md5 = require('./node_modules/xiaolan/lib/tools')({}).md5;
 function http_post(url, data) {
   request.post({
     'url': url,
@@ -24,11 +24,15 @@ function http_get(url, data) {
     console.log(e, r ? r.body : null);
   });
 };
+// db06c78d1e24cf70
 
 var url = 'http://127.0.0.1:9527';
-//http_post(url+'/access/login',{
-//  'account':'test',
-//  'password':'123456'
+var t = Date.now();
+//http_post(url+'/access/tpLogin',{
+//  'account':'test_tpLogin',
+//  'appId':'1000',
+//  't':t,
+//  'sign':md5('test_tpLogindb06c78d1e24cf70'+t)
 //})
 //http_get(url+'/user/info/tel/0',{
 //  'uid':'1135',

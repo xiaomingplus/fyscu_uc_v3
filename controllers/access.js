@@ -76,6 +76,74 @@ access.login = function (req, res) {
   }
 };
 
+//TODO 
+access.tpLogin = function(req,res){
+  let appId = req.body.appId || 1000;
+  let account = req.body.account;
+  let tel = req.body.tel;
+  let sign = req.body.sign;
+  let t = req.body.t;
+
+  if(appId && account && tel && sign){
+    let appKey = appInfo[appId].appkey;
+    if(sign === md5(account+appKey+tel+t)){
+      //success
+      db.query({
+        sql:'select * from uc_account where account=:account limit 1',
+        params:{
+          'account':account
+        }
+      }, function (e, r) {
+        if(!e){
+          if(r && r.length){
+            // login
+            let uid = r[0].uid;
+            if(uid) {
+              nodedb.get('/' + uid, function (e1, r1) {
+                if (r1) {
+                  let accessToken = md5('uc3.0' + uid + Date.now());
+                  let userInfo = {
+                    account,
+                    uid,
+                    accessToken
+                  };
+                  redis.saveExpireObj('session:' + uid, userInfo, 3600 * 24 * 30, function (e2, r2) {
+                    console.log(e2, r2);
+                  });
+
+                  if(appInfo[appId]){
+                    var url = appInfo[appId].callback;
+                    res.redirect(url+'?uid='+uid+'&accessToken='+accessToken);
+                  }else{
+                    res.json(400,{},'appId错误');
+                  }
+                } else {
+                  req.session['accountId'] = r[0].id;
+                  res.redirect('/access/bindTel?appId='+appId);
+                }
+              });
+            }else{
+              req.session['accountId'] = r[0].id;
+              res.redirect('/access/bindTel?appId='+appId);
+            }
+          } else{
+            // reg
+            req.body.password = sign;
+            access.reg(req,res);
+          }
+        }else{
+          console.log(e);
+          res.json(500,{},'mysql error');
+        }
+      });
+    }else{
+      res.json(400);
+    }
+  }else{
+    res.json(401);
+  }
+};
+
 access.reg = function(req,res){
   let appId = req.body.appId || 1000;
   let account = req.body.account;
