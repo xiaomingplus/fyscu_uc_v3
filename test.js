@@ -3,42 +3,69 @@
  */
 var request = require('request');
 var md5 = require('./node_modules/xiaolan/lib/tools')({}).md5;
+var nodedb = require('nodedb')({
+    'path': './db'
+});
 function http_post(url, data) {
-  request.post({
-    'url': url,
-    'form': data
-  }, function (e, r) {
-    console.log(e, r.body);
-  });
+    request.post({
+        'url': url,
+        'json': data
+    }, function (e, r) {
+        console.log(e, r.body);
+    });
 };
 //http get
 function http_get(url, data) {
-  if (data) {
-    url += '?';
-    for (var k in data) {
-      url += k + '=' + data[k] + '&';
+    if (data) {
+        url += '?';
+        for (var k in data) {
+            url += k + '=' + data[k] + '&';
+        }
     }
-  }
-  console.log(url);
-  request.get(url, function (e, r) {
-    console.log(e, r ? r.body : null);
-  });
+    //console.log(url);
+
+    request.get(url, function (e, r) {
+        console.log(e, r ? r.body : null);
+    });
+
 };
 // db06c78d1e24cf70
 
 var url = 'http://127.0.0.1:9527';
 var t = Date.now();
-//http_post(url+'/access/tpLogin',{
-//  'account':'test_tpLogin',
-//  'appId':'1000',
-//  't':t,
-//  'sign':md5('test_tpLogindb06c78d1e24cf70'+t)
-//})
-//http_get(url+'/user/info/tel/0',{
-//  'uid':'1135',
-//  'accessToken':'227395f01a3686cfc41747dbdae60e55'
+t = parseInt(t/(1000 * 300));
+var appId = 1000;
+var appKey = 'db06c78d1e24cf70';
+var sign = md5('superLan'+appKey+t);
+//nodedb.get('/1135', function (e, r) {
+//    console.log(e,r);
 //});
-//
+//nodedb.query('/fyvip','1', function (e, r) {
+//    console.log(e,r)
+//});
+//http_post(url+'/user/setter',{
+//    'appId':1000,
+//    'appKey':'db06c78d1e24cf70',
+//    'uid':1135,
+//    'accessToken':'00e12e0ef831d86d40f15490f2e39802',
+//    'path':'/fyvip',
+//    'data':{
+//        'level':1
+//    },
+//    'index':['level']
+//})
+//http_get(url+'/user/info',{
+//        'appId':1000,
+//    'appKey':'db06c78d1e24cf70',
+//    'uid':1135,
+//    'accessToken':'00e12e0ef831d86d40f15490f2e39802'
+//});
+//http_get('/access/spLogin',{
+//    appId:appId,
+//    account:'superLan',
+//    sign:sign
+//})
+
 //var db = require('./node_modules/xiaolan/lib/mysql')({
 //  "host": "121.41.85.236",
 //  "port": "3306",
@@ -46,27 +73,8 @@ var t = Date.now();
 //  "password": "123456",
 //  "database": "platform_ng"
 //});
-//db.query('select * from platform_ng.app_info', function (e, r) {
-//  console.log(r);
-//});
-//var nodedb = require('./node_modules/nodedb')({
-//  'path': './db'
-//});
-//nodedb.query('18688124774', function (e, r) {
-//  console.log(e,r);
-//});
-//console.log(nodedb);
-//id: 30,
-//  uid: 1033,
-//  username: 'oHBDCjiVUYkt4RT92Y7zvfAKVgJs',
-//  tel: '15680782256',
-//  qq: null,
-//  email: null,
-//  wechat_id: 'oHBDCjiVUYkt4RT92Y7zvfAKVgJs',
-//  qq_openid: null,
-//  is_vip: 0,
-//  gender: 0
-//var t = parseInt(Date.now()/1000);
+//
+//
 //db.query({
 //  sql:'select t1.*,t2.username,t2.password from fyscu_platform.uc_user_info t1 left join fyscu_platform.uc_account t2 on t1.uid=t2.id where t2.type=1'
 //}, function (e, r) {
@@ -75,7 +83,7 @@ var t = Date.now();
 //    var i = r[k];
 //    (function(item){
 //      var u = item.uid;
-//      nodedb.put('/'+u+'/tel/0',{
+//      nodedb.put('/'+u+'/tel',{
 //        'value':item.tel
 //      },['value'], function (e1, r1) {
 //
