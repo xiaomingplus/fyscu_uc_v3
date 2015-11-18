@@ -32,16 +32,34 @@ function http_get(url, data) {
 // db06c78d1e24cf70
 
 var url = 'http://127.0.0.1:9527';
-var t = Date.now();
-t = parseInt(t/(1000 * 300));
-var appId = 1000;
-var appKey = 'db06c78d1e24cf70';
-var sign = md5('superLan'+appKey+t);
-//nodedb.get('/1135', function (e, r) {
+//http_get(url+'/user/info',{
+//    appId:1000,
+//    appKey:'db06c78d1e24cf70',
+//    uid:1135,
+//    accessToken:'7650260b795ddec1f4689fc021aa91a2'
+//})
+//http_post(url+'/user/setter',{
+//    appId:1000,
+//    appKey:'db06c78d1e24cf70',
+//    uid:1135,
+//    accessToken:'7650260b795ddec1f4689fc021aa91a2',
+//    path:'/fyvip',
+//    data:{
+//        grade:2007,
+//        level:3
+//    },
+//    index:['grade','level']
+//})
+//var t = Date.now();
+//t = parseInt(t/(1000 * 300));
+//var appId = 1000;
+//var appKey = 'db06c78d1e24cf70';
+//var sign = md5('superLan'+appKey+t);
+//nodedb.get('/1039', function (e, r) {
 //    console.log(e,r);
 //});
-//nodedb.query('/fyvip','1', function (e, r) {
-//    console.log(e,r)
+//nodedb.query('/fyvip/grade',2007, function (e, r) {
+//    console.log(r[0].data.fyvip)
 //});
 //http_post(url+'/user/setter',{
 //    'appId':1000,
@@ -74,7 +92,7 @@ var sign = md5('superLan'+appKey+t);
 //  "database": "platform_ng"
 //});
 //
-//
+//t = parseInt(t/1000);
 //db.query({
 //  sql:'select t1.*,t2.username,t2.password from fyscu_platform.uc_user_info t1 left join fyscu_platform.uc_account t2 on t1.uid=t2.id where t2.type=1'
 //}, function (e, r) {
@@ -96,3 +114,4 @@ var sign = md5('superLan'+appKey+t);
 //    })(i);
 //  }
 //});
+

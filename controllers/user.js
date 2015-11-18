@@ -20,6 +20,7 @@ User.setter = function (req, res) {
         let path = req.body.path;
         let data = req.body.data;
         let index = req.body.index;
+        console.log(index)
         User._filter(uid, accessToken, function (e, r) {
             if (!e) {
                 if (path[0] !== '/') {
@@ -49,7 +50,7 @@ User.info = function (req, res) {
         let accessToken = req.query.accessToken;
         User._filter(uid, accessToken, function (e, r) {
             if (!e) {
-                nodedb.get('/' + uid + (req.params[2] || ''), function (e1, r1) {
+                nodedb.get('/' + uid , function (e1, r1) {
                     res.json(200, r1);
                 });
             } else {
@@ -63,8 +64,9 @@ User.info = function (req, res) {
 
 User._filter = function (uid, token, cb) {
     redis.getObj('session:' + uid, function (e, r) {
+        //console.log(e,r)
         if (!e) {
-            if (r.accessToken === token) {
+            if (r && r.accessToken === token) {
                 cb(null, null);
             } else {
                 cb(403, '登录过期')
