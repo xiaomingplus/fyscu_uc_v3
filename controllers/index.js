@@ -7,10 +7,11 @@
 var Controller = {};
 
 Controller.index = function (req, res) {
-  res.render('index.html', {
-    'name': 'xiaobq',
-    'appId':req.query.appId
-  });
+    var appId = req.query.appId || req.query.appid || 0;
+    res.render('index.html', {
+        'name': 'xiaobq',
+        'appId': appId
+    });
 };
 
 module.exports = Controller;

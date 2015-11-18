@@ -31,13 +31,13 @@ function http_get(url, data) {
 };
 // db06c78d1e24cf70
 
-var url = 'http://127.0.0.1:9527';
-//http_get(url+'/user/info',{
-//    appId:1000,
-//    appKey:'db06c78d1e24cf70',
-//    uid:1135,
-//    accessToken:'7650260b795ddec1f4689fc021aa91a2'
-//})
+var url = 'http://121.41.85.236:9527';
+http_get(url+'/user/info',{
+    appId:1000,
+    appKey:'db06c78d1e24cf70',
+    uid:1135,
+    accessToken:'7650260b795ddec1f4689fc021aa91a2'
+})
 //http_post(url+'/user/setter',{
 //    appId:1000,
 //    appKey:'db06c78d1e24cf70',

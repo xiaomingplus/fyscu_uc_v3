@@ -47,6 +47,7 @@ access.login = function (req, res) {
 
                                     if (appInfo[appId]) {
                                         var url = appInfo[appId].callback;
+                                        console.log(url)
                                         res.redirect(url + '?uid=' + uid + '&accessToken=' + accessToken);
                                     } else {
                                         res.json(400, {}, 'appId错误');
@@ -114,6 +115,7 @@ access.spLogin = function (req, res) {
 
                                     if (appInfo[appId]) {
                                         var url = appInfo[appId].callback;
+
                                         res.redirect(url + '?uid=' + uid + '&accessToken=' + accessToken);
                                     } else {
                                         res.json(400, {}, 'appId错误');
