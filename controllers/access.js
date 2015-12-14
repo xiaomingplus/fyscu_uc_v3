@@ -15,7 +15,7 @@ let access = {};
 
 access.version = '1';
 
-access.login = function (req, res) {
+access.login = function (req, res) { 
     let account = req.body.account;
     let password = req.body.password;
     let appId = req.body.appId || 1000;
@@ -178,7 +178,7 @@ access.reg = function (req, res) {
 
 access.bindTel = function (req, res) {
     if (req.method == 'GET') {
-        res.render('bindTel.html');
+        res.render('bindTel.html',{'license':global.app.config.license});
     } else {
         let appId = req.body.appId || 1000;
         let tel = req.body.tel;
