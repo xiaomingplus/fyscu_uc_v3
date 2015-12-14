@@ -3,7 +3,8 @@
  */
 module.exports = {
   'version': '1.0.0',
-  'port': 9527,
+  'license':' © 2015 FYSCU , Fcoder 2.2 XJBG license.',
+  'port': 9528,
   'ip': null,
   'cors': false,
   'static': ['js', 'css', 'jpg', 'png', 'ico'],
