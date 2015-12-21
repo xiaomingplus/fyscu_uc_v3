@@ -21,6 +21,7 @@
     "easymysql": "^0.2.7",
     "nodedb": "0.0.16",
     "request": "^2.65.0",
-    "xiaolan": "^1.0.44"
+    "serve-static": "^1.10.0",
+    "xiaolan": "^1.0.45"
   }
 }

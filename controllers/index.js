@@ -14,4 +14,8 @@ Controller.index = function (req, res) {
         'appId': appId
     });
 };
+
+Controller.error = function (req, res) {
+    res.render('error.html',{'msg':'ceshi '});
+}
 module.exports = Controller;

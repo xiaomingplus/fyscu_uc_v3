@@ -10,4 +10,8 @@ Controller.index = function (req, res) {
 
     res.html('help.html');
 };
+
+Controller.demo = function (req, res) {
+    res.html('demo.html');
+}
 module.exports = Controller;

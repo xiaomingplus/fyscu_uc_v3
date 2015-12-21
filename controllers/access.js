@@ -18,8 +18,8 @@ access.version = '1';
 access.login = function (req, res) { 
     let account = req.body.account;
     let password = req.body.password;
-    let appId = req.body.appId || 1000;
-    if (appId && account && password) {
+    let appId = req.body.appId;
+    if (Number.parseInt(appId) && account && password) {
         let time = parseInt(Date.now());
         db.query({
             sql: 'select * from uc_account where account=:account limit 1',
@@ -50,7 +50,7 @@ access.login = function (req, res) {
                                         console.log(url)
                                         res.redirect(url + '?uid=' + uid + '&accessToken=' + accessToken);
                                     } else {
-                                        res.json(400, {}, 'appId错误');
+                                        res.render('error.html',{'msg':'发生错误大家也是不想的，多从自己身上找原因。'});
                                     }
                                 } else {
                                     req.session['accountId'] = r[0].id;
@@ -62,18 +62,18 @@ access.login = function (req, res) {
                             res.redirect('/access/bindTel?appId=' + appId);
                         }
                     } else {
-                        res.json(403, {}, '密码或帐号不正确');
+                        res.render('error.html',{'msg':'密码或帐号不正确 '});
                     }
                 } else {
-                    res.json(403, {}, '密码或帐号不正确');
+                    res.render('error.html',{'msg':'帐号或密码不正确 '});
                 }
             } else {
                 console.log(e);
-                res.json(500, {}, 'mysql error');
+                res.render('error.html',{'msg':'mysql error '});
             }
         });
     } else {
-        res.rollback('发生错误大家也是不想的，多从自己身上找原因。');
+        res.render('error.html',{'msg':'大师兄，狮虎和appId被二师兄抓走了。  '});
     }
 };
 
