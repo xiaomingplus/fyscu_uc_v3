@@ -18,8 +18,9 @@
   "homepage": "https://github.com/captainblue2013/fyscu_uc_v3",
   "dependencies": {
     "async": "^1.4.2",
+    "easymysql": "^0.2.7",
     "nodedb": "0.0.16",
     "request": "^2.65.0",
-    "xiaolan": "^1.0.42"
+    "xiaolan": "^1.0.44"
   }
 }

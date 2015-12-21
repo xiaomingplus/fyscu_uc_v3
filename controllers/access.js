@@ -73,7 +73,7 @@ access.login = function (req, res) {
             }
         });
     } else {
-        res.json(401);
+        res.rollback('发生错误大家也是不想的，多从自己身上找原因。');
     }
 };
 
