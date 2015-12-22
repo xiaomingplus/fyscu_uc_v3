@@ -73,7 +73,7 @@ access.login = function (req, res) {
             }
         });
     } else {
-        res.render('error.html',{'msg':'大师兄，狮虎和appId被二师兄抓走了。  '});
+        res.render('error.html',{'msg':'大师兄，account、password和appId被二师兄抓走了。  '});
     }
 };
 
@@ -149,11 +149,11 @@ access.spLogin = function (req, res) {
 };
 
 access.reg = function (req, res) {
-    let appId = req.body.appId || 1000;
+    let appId = req.body.appId;
     let account = req.body.account;
     let password = req.body.password;
     let time = parseInt(Date.now());
-    if (account && password && appId) {
+    if (account && password && Number.parseInt(appId)) {
         password = md5('' + account + password);
         db.query({
             'sql': 'insert into uc_account set account=:account,password=:password,createAt=:createAt',
@@ -168,11 +168,11 @@ access.reg = function (req, res) {
                 res.redirect('/access/bindTel');
             } else {
                 console.log(e);
-                res.json(500, {}, 'mysql error');
+                res.render('error.html',{'msg':'mysql error '});
             }
         });
     } else {
-        res.json(401);
+        res.render('error.html',{'msg':'大师兄，account、password和appId被二师兄抓走了。  '});
     }
 };
 
