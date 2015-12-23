@@ -22,6 +22,6 @@
     "nodedb": "0.0.16",
     "request": "^2.65.0",
     "serve-static": "^1.10.0",
-    "xiaolan": "^1.0.45"
+    "xiaolan": "^1.0.46"
   }
 }
