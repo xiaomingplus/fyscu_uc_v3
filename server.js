@@ -11,11 +11,11 @@ var xiaolan = require('xiaolan')(config);
 //启动监听服务
 xiaolan.createServer();
 
-global.app.libs.mysql.query('select * from app_info', function (e,r) {
-  if(r.length){
-    global.appinfo = {};
-    for(var k in r){
-      global.appinfo[''+r[k].id] = r[k];
-    }
-  }
-});
+//global.app.libs.mysql.query('select * from app_info', function (e,r) {
+//  if(r.length){
+//    global.appinfo = {};
+//    for(var k in r){
+//      global.appinfo[''+r[k].id] = r[k];
+//    }
+//  }
+//});

@@ -8,10 +8,12 @@ var Controller = {};
 
 Controller.index = function (req, res) {
     var appId = req.query.appId || req.query.appid || 0;
+    var redirectUrl = req.query.callback;
     res.render('index.html', {
         'license':global.app.config.license,
         'name': 'xiaobq',
-        'appId': appId
+        'appId': appId,
+        'callback':redirectUrl
     });
 };
 

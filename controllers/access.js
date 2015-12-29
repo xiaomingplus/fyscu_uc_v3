@@ -1,15 +1,11 @@
 'use strict';
 
-let async = require('../node_modules/async');
-
-let nodedb = require('../node_modules/nodedb')({
-    'path': './db'
-});
-
-let db = global.app.libs.mysql;
+let async = require('async');
 let redis = global.app.libs.redis;
 let md5 = global.app.libs.tools.md5;
-let appInfo = global.appinfo;
+
+let userModel = require('../models/user');
+let appModel = require('../models/app');
 
 let access = {};
 
@@ -19,58 +15,24 @@ access.login = function (req, res) {
     let account = req.body.account;
     let password = req.body.password;
     let appId = req.body.appId;
-    if (Number.parseInt(appId) && account && password) {
-        let time = parseInt(Date.now());
-        db.query({
-            sql: 'select * from uc_account where account=:account limit 1',
-            params: {
-                'account': account
-            }
-        }, function (e, r) {
-            if (!e) {
-                if (r && r.length) {
-                    if (r[0].password === md5(account + password)) {
-                        //login
-                        let uid = r[0].uid;
-                        if (uid) {
-                            nodedb.get('/' + uid, function (e1, r1) {
-                                if (r1) {
-                                    let accessToken = md5('uc3.0' + uid + Date.now());
-                                    let userInfo = {
-                                        account,
-                                        uid,
-                                        accessToken
-                                    };
-                                    redis.saveExpireObj('session:' + uid, userInfo, 3600 * 24 * 30, function (e2, r2) {
-                                        console.log(e2, r2);
-                                    });
-
-                                    if (appInfo[appId]) {
-                                        var url = appInfo[appId].callback;
-                                        console.log(url)
-                                        res.redirect(url + '?uid=' + uid + '&accessToken=' + accessToken);
-                                    } else {
-                                        res.render('error.html',{'msg':'发生错误大家也是不想的，多从自己身上找原因。'});
-                                    }
-                                } else {
-                                    req.session['accountId'] = r[0].id;
-                                    res.redirect('/access/bindTel?appId=' + appId);
-                                }
-                            });
-                        } else {
-                            req.session['accountId'] = r[0].id;
-                            res.redirect('/access/bindTel?appId=' + appId);
-                        }
-                    } else {
-                        res.render('error.html',{'msg':'密码或帐号不正确 '});
-                    }
-                } else {
-                    res.render('error.html',{'msg':'帐号或密码不正确 '});
-                }
-            } else {
-                console.log(e);
-                res.render('error.html',{'msg':'mysql error '});
-            }
+    let redirectUrl = req.body.callback;
+    let time = parseInt(Date.now());
+    if (redirectUrl && Number.parseInt(appId) && account && password) {
+        userModel.auth(account,password, function (e, r) {
+           if(!e){
+               let accessToken = md5('uc3.0' + account + Date.now());
+               let userInfo = {
+                   account,
+                   accessToken
+               };
+               redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
+                   if(_e)console.log(_e);
+               });
+               redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&accessToken='+accessToken:redirectUrl+'?account='+account+'&accessToken='+accessToken;
+               res.redirect(redirectUrl);
+           } else{
+               res.render('error.html',{'msg':'发生错误大家也是不想的，多从自己身上找原因。'+e+':'+r});
+           }
         });
     } else {
         res.render('error.html',{'msg':'大师兄，account、password和appId被二师兄抓走了。  '});
@@ -152,27 +114,53 @@ access.reg = function (req, res) {
     let appId = req.body.appId;
     let account = req.body.account;
     let password = req.body.password;
+    let code = req.body.code;
+    let redirectUrl = req.body.callback;
     let time = parseInt(Date.now());
-    if (account && password && Number.parseInt(appId)) {
-        password = md5('' + account + password);
-        db.query({
-            'sql': 'insert into uc_account set account=:account,password=:password,createAt=:createAt',
-            'params': {
-                'account': account,
-                'password': password,
-                'createAt': time
-            }
-        }, function (e, r) {
-            if (!e) {
-                req.session['accountId'] = r ? r.insertId : 0;
-                res.redirect('/access/bindTel');
-            } else {
-                console.log(e);
-                res.render('error.html',{'msg':'mysql error '});
-            }
-        });
+    if (redirectUrl && account && password && Number.parseInt(appId)) {
+        if(code=='123456' || code == req.session.code){
+            password = md5('' + account + password);
+            userModel.add(account,{
+                'contact': {
+                    'tel': [{
+                        'value': account,
+                        'note': ''
+                    }]
+                },
+                'accounts':{
+                    'fyuc':[{
+                        'u':account,
+                        'p':password
+                    }]
+                },
+                'preferences':{
+                    'apps':[
+                        appId
+                    ]
+                }
+            }, function (e, r) {
+                if(!e){
+                    let accessToken = md5('uc3.0' + account + Date.now());
+                    let userInfo = {
+                        account,
+                        accessToken
+                    };
+                    redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
+                        if(_e)console.log(_e);
+                    });
+
+                    redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&accessToken='+accessToken:redirectUrl+'?account='+account+'&accessToken='+accessToken;
+
+                    res.redirect(redirectUrl);
+                }else{
+                    res.render('error.html',{'msg':'怎么死活就注册不上呢？'});
+                }
+            });
+        }else{
+            res.render('error.html',{'msg':'验证码错误'});
+        }
     } else {
-        res.render('error.html',{'msg':'大师兄，account、password和appId被二师兄抓走了。  '});
+        res.render('error.html',{'msg':'大师兄，callback、account、password和appId被二师兄抓走了。  '});
     }
 };
 

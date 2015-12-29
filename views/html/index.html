@@ -37,7 +37,8 @@
                     <hr>
                     <form method="post" class="am-form" action="/access/login">
                         <input type="hidden" name="appId" value="{{appId}}" />
-                        <input type="text" name="account"  value="" placeholder="用户名/手机号">
+                        <input type="hidden" name="callback" value="{{callback}}" />
+                        <input type="number" name="account"  value="" placeholder="手机号">
                         <hr>
                         <input type="password" name="password"  value="" placeholder="密码">
                         <hr>
@@ -60,7 +61,15 @@
                     <hr>
                     <form method="post" class="am-form" action="/access/reg">
                         <input type="hidden" name="appId" value="{{appId}}" />
-                        <input required="required" type="text" name="account"  value="" placeholder="用户名" autocomplete="off">
+                        <input type="hidden" name="callback" value="{{callback}}" />
+                        <input type="number" name="account"  value="" placeholder="手机号">
+                        <hr>
+                        <div class="am-input-group">
+                            <input type="text" name="code" class="am-form-field" placeholder="短信验证码" autocomplete="off">
+                            <span class="am-input-group-btn">
+                                <button id="send_btn" class="am-btn am-btn-secondary" type="button">获取</button>
+                            </span>
+                        </div>
                         <hr>
                         <input required="required" type="password" name="password"  value="" placeholder="密码" autocomplete="off">
                         <hr>

@@ -10,7 +10,7 @@ module.exports = {
   'static': ['js', 'css', 'jpg', 'png', 'ico'],
   'modules': {
     'mysql': {
-      'import': 1,
+      'import': 0,
       'config': {
         "host": "121.41.85.236",
         "port": "3306",
