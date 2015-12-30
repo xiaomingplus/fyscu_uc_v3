@@ -41,72 +41,31 @@ access.login = function (req, res) {
 
 //TODO 
 access.spLogin = function (req, res) {
-    let appId = req.query.appId || 1000;
+    let appId = req.query.appId ;
     let account = req.query.account;
     let sign = req.query.sign;
     let t = Date.now();
-
+    let redirectUrl = decodeURIComponent(req.query.callback);
+    
     if (appId && account  && sign) {
-        let appKey = appInfo[appId].appkey;
-      
-        if (sign === md5(account + appKey + parseInt(t/(1000 * 300)))) {
+        let appKey = appModel.all[appId].appKey;
+        if (sign === md5(account + appKey + parseInt(t/global.app.config.params['SP_LOGIN_SIGN_TIME_LIMIT']))) {
             console.log('sign ok')
-            //success
-            db.query({
-                sql: 'select * from uc_account where account=:account limit 1',
-                params: {
-                    'account': account
-                }
-            }, function (e, r) {
-                if (!e) {
-                    if (r && r.length) {
-                        // login
-                        let uid = r[0].uid;
-                        if (uid) {
-                            nodedb.get('/' + uid, function (e1, r1) {
-                                if (r1) {
-                                    let accessToken = md5('uc3.0' + uid + Date.now());
-                                    let userInfo = {
-                                        account,
-                                        uid,
-                                        accessToken
-                                    };
-                                    redis.saveExpireObj('session:' + uid, userInfo, 3600 * 24 * 30, function (e2, r2) {
-                                        console.log(e2, r2);
-                                    });
-
-                                    if (appInfo[appId]) {
-                                        var url = appInfo[appId].callback;
-
-                                        res.redirect(url + '?uid=' + uid + '&accessToken=' + accessToken);
-                                    } else {
-                                        res.json(400, {}, 'appId错误');
-                                    }
-                                } else {
-                                    req.session['accountId'] = r[0].id;
-                                    res.redirect('/access/bindTel?appId=' + appId);
-                                }
-                            });
-                        } else {
-                            req.session['accountId'] = r[0].id;
-                            res.redirect('/access/bindTel?appId=' + appId);
-                        }
-                    } else {
-                        // reg
-                        req.body = req.query;
-                        req.body.password = sign;
-                        access.reg(req, res);
-                    }
-                } else {
-                    console.log(e);
-                    res.json(500, {}, 'mysql error');
-                }
-            });
+            //success 签名通过意味着uc承认这个account的合法性
+            //todo
         } else {
-            res.json(400);
+            if(redirectUrl) {
+                res.render('error.html', {'msg': '签名不对你糊弄谁呢？'});
+            }else{
+                res.json(401,{},'签名不正确');
+            }
         }
     } else {
-        res.json(401);
+        if(redirectUrl) {
+            res.render('error.html', {'msg': '大师兄，callback、account、password和appId被二师兄抓走了。  '});
+        }else{
+            res.json(401,{},'参数缺失，请参看文档');
+        }
     }
 };
 

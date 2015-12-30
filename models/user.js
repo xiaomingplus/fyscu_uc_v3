@@ -73,15 +73,19 @@ user.del = function (userIdentity,cb) {
     });
 }
 
-user.auth = function(tel,password,cb){
-    if(tel && password){
-        user.get(tel, function (e, r) {
+user.auth = function(account,password,cb){
+    if(account && password){
+        user.match('/accounts/fyuc/u',account, function (e, r) {
             if(!e){
-                let _account = r.accounts.fyuc[0];
-                if((tel==_account.u)&&(md5(''+tel+password)==_account.p)){
-                    cb(null,r);
+                if(r.count > 0){
+                    let fyuc = (r.result && r.result.length)?r.result[0]._source.accounts.fyuc[0]:{};
+                    if(fyuc.p == md5(''+account+password)){
+                        cb(null,r.result[0]);
+                    }else{
+                        cb(402,'授权失败');
+                    }
                 }else{
-                    cb(402,'授权失败');
+                    cb(404,'account not found');
                 }
             }else{
                 cb(e,r);
@@ -93,5 +97,29 @@ user.auth = function(tel,password,cb){
 };
 
 
+
+user.match = function (dPath, value, cb) {
+    if(typeof value == 'object'){
+        value = JSON.stringify(value);
+    }
+    let term = {};
+    term[dPath.split('/').join('.').substr(1)] = value;
+
+    http.get(esHost+'/uc/users/_search',{
+        "version":true,
+        "query":{
+            "term":term
+        }
+    }, function (e, r) {
+        if(!e){
+            cb(null,{
+                'count':r.body.hits.total,
+                'result':r.body.hits.hits
+            });
+        }else{
+            cb(500,'storage error');
+        }
+    });
+}
 
 module.exports = user;

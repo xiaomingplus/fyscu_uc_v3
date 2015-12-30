@@ -1,7 +1,7 @@
 /**
  * Created by lanhao on 15/5/17.
  */
-
+'use strict';
 //引入配置文件
 var config = require('./config/config');
 
@@ -11,6 +11,7 @@ var xiaolan = require('xiaolan')(config);
 //启动监听服务
 xiaolan.createServer();
 
+let appModel = require('./models/app');
 //global.app.libs.mysql.query('select * from app_info', function (e,r) {
 //  if(r.length){
 //    global.appinfo = {};
