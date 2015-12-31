@@ -2,6 +2,7 @@
  * Created by lanhao on 15/5/17.
  */
 
+'use strict';
 
 
 var Controller = {};
