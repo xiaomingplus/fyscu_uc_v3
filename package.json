@@ -20,6 +20,6 @@
     "async": "^1.4.2",
     "request": "^2.65.0",
     "serve-static": "^1.10.0",
-    "xiaolan": "^1.0.46"
+    "xiaolan": "^1.0.47"
   }
 }

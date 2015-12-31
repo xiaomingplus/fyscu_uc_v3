@@ -23,15 +23,15 @@ access.login = function (req, res) {
     if (redirectUrl && Number.parseInt(appId) && account && password) {
         userModel.auth(account,password, function (e, r) {
            if(!e){
-               let accessToken = md5('uc3.0' + account + Date.now());
+               let token = md5('uc3.0' + account + Date.now());
                let userInfo = {
                    account,
-                   accessToken
+                   token
                };
                redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
                    if(_e)console.log(_e);
                });
-               redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&accessToken='+accessToken:redirectUrl+'?account='+account+'&accessToken='+accessToken;
+               redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&token='+token:redirectUrl+'?account='+account+'&token='+token;
                res.redirect(redirectUrl);
            } else{
                res.render('error.html',{'msg':'发生错误大家也是不想的，多从自己身上找原因。'+e+':'+r});
@@ -77,17 +77,17 @@ access.spLogin = function (req, res) {
     //                        }
     //                    }, function (e1, r1) {
     //                        if(!e1){
-    //                            let accessToken = md5('uc3.0' + account + Date.now());
+    //                            let token = md5('uc3.0' + account + Date.now());
     //                            let userInfo = {
     //                                account,
-    //                                accessToken
+    //                                token
     //                            };
     //                            redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
     //                                if(_e)console.log(_e);
     //                            });
     //                            console.log(!!redirectUrl);
     //                            if(!!redirectUrl){
-    //                                redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&accessToken='+accessToken:redirectUrl+'?account='+account+'&accessToken='+accessToken;
+    //                                redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&token='+token:redirectUrl+'?account='+account+'&token='+token;
     //                                res.redirect(redirectUrl);
     //                            }else{
     //                                res.json(200,userInfo);
@@ -102,17 +102,17 @@ access.spLogin = function (req, res) {
     //                    });
     //                }else{
     //                    // sp login
-    //                    let accessToken = md5('uc3.0' + account + Date.now());
+    //                    let token = md5('uc3.0' + account + Date.now());
     //                    let userInfo = {
     //                        account,
-    //                        accessToken
+    //                        token
     //                    };
     //                    redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
     //                        if(_e)console.log(_e);
     //                    });
     //                    console.log(!!redirectUrl);
     //                    if(!!redirectUrl){
-    //                        redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&accessToken='+accessToken:redirectUrl+'?account='+account+'&accessToken='+accessToken;
+    //                        redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&token='+token:redirectUrl+'?account='+account+'&token='+token;
     //                        res.redirect(redirectUrl);
     //                    }else{
     //                        res.json(200,userInfo);
@@ -176,16 +176,16 @@ access.reg = function (req, res) {
                 }
             }, function (e, r) {
                 if(!e){
-                    let accessToken = md5('uc3.0' + account + Date.now());
+                    let token = md5('uc3.0' + account + Date.now());
                     let userInfo = {
                         account,
-                        accessToken
+                        token
                     };
                     redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
                         if(_e)console.log(_e);
                     });
 
-                    redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&accessToken='+accessToken:redirectUrl+'?account='+account+'&accessToken='+accessToken;
+                    redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&token='+token:redirectUrl+'?account='+account+'&token='+token;
 
                     res.redirect(redirectUrl);
                 }else{

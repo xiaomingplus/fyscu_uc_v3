@@ -8,6 +8,7 @@ var esHost = 'http://121.41.85.236:9200';
 
 let user = {};
 
+
 user.add = function (userIdentify,data,cb) {
     if(userIdentify && data){
         async.waterfall([
@@ -45,6 +46,7 @@ user.add = function (userIdentify,data,cb) {
     }
 };
 
+
 user.get = function (userIdentity, cb) {
     http.get(esHost+'/uc/users/'+userIdentity,{}, function (e, r) {
         if(e){
@@ -65,7 +67,6 @@ user.get = function (userIdentity, cb) {
         }
     });
 }
-
 
 user.del = function (userIdentity,cb) {
     http.del(esHost+'/uc/users/'+userIdentity, function (e, r) {
@@ -121,5 +122,24 @@ user.match = function (dPath, value, cb) {
         }
     });
 }
+
+
+user.branch = function (userIdentity, dPath, cb) {
+    user.get(userIdentity, function (e, r) {
+        if(!e){
+            //cb(null,r);
+            let result = r;
+            let dArr = dPath.split('/');
+            while(dArr.length>1){
+                dArr.shift();
+                result = result[dArr[0]];
+            }
+            cb(null ,result);
+        }else{
+            cb(e,r);
+        }
+    });
+};
+
 
 module.exports = user;

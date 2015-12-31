@@ -19,18 +19,21 @@ app.model = function () {
 
 app.all = {};
 
-http.get(esHost+'/uc/apps/_search',{}, function (e, r) {
-    if(r && r.body){
-        try{
-            let arr = r.body.hits.hits;
-            for(let k in arr){
-                app.all[arr[k]['_id']] = arr[k]['_source'];
+app.init = function () {
+    http.get(esHost+'/uc/apps/_search',{}, function (e, r) {
+        if(r && r.body){
+            try{
+                let arr = r.body.hits.hits;
+                for(let k in arr){
+                    app.all[arr[k]['_id']] = arr[k]['_source'];
+                }
+            }catch(ex){
+                console.log(ex);
             }
-        }catch(ex){
-            console.log(ex);
         }
-    }
-});
+    });
+};
+app.init();
 
 app.create = function(name,domain,cb){
     redis.incrby(['ai:appId',1], function (e, r) {
@@ -87,6 +90,33 @@ app.permission = function (appId, permissions, cb) {
     }
 };
 
+app.checkPermission = function (appId, dPath) {
+    let _appPermission = app.all[appId]?app.all[appId].permission:null;
+    if(_appPermission){
+        let sig = false;
+        for(let k in _appPermission){
+            sig = sig || (dPath==_appPermission[k]);
+        }
+        return sig
+    }else{
+        return false;
+    }
+}
 
+app.update = function (appId, data, cb) {
+    if(appId && data){
+        http.post(esHost+'/uc/apps/'+appId+'/_update',{
+            "doc" : data
+        }, function (e, r) {
+            if(!e){
+                cb(null,r);
+            }else{
+                cb(501,'http error');
+            }
+        });
+    }else{
+        cb(400,'参数有误');
+    }
+}
 
 module.exports = app;
