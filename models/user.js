@@ -8,6 +8,7 @@ var esHost = 'http://121.41.85.236:9200';
 
 let user = {};
 
+
 user.add = function (userIdentify,data,cb) {
     if(userIdentify && data){
         async.waterfall([
@@ -45,6 +46,7 @@ user.add = function (userIdentify,data,cb) {
     }
 };
 
+
 user.get = function (userIdentity, cb) {
     http.get(esHost+'/uc/users/'+userIdentity,{}, function (e, r) {
         if(e){
@@ -66,22 +68,25 @@ user.get = function (userIdentity, cb) {
     });
 }
 
-
 user.del = function (userIdentity,cb) {
     http.del(esHost+'/uc/users/'+userIdentity, function (e, r) {
         cb(e,r?r.body:null);
     });
 }
 
-user.auth = function(tel,password,cb){
-    if(tel && password){
-        user.get(tel, function (e, r) {
+user.auth = function(account,password,cb){
+    if(account && password){
+        user.match('/accounts/fyuc/u',account, function (e, r) {
             if(!e){
-                let _account = r.accounts.fyuc[0];
-                if((tel==_account.u)&&(md5(''+tel+password)==_account.p)){
-                    cb(null,r);
+                if(r.count > 0){
+                    let fyuc = (r.result && r.result.length)?r.result[0]._source.accounts.fyuc[0]:{};
+                    if(fyuc.p == md5(''+account+password)){
+                        cb(null,r.result[0]);
+                    }else{
+                        cb(402,'授权失败');
+                    }
                 }else{
-                    cb(402,'授权失败');
+                    cb(404,'account not found');
                 }
             }else{
                 cb(e,r);
@@ -92,6 +97,49 @@ user.auth = function(tel,password,cb){
     }
 };
 
+
+
+user.match = function (dPath, value, cb) {
+    if(typeof value == 'object'){
+        value = JSON.stringify(value);
+    }
+    let term = {};
+    term[dPath.split('/').join('.').substr(1)] = value;
+
+    http.get(esHost+'/uc/users/_search',{
+        "version":true,
+        "query":{
+            "term":term
+        }
+    }, function (e, r) {
+        if(!e){
+            cb(null,{
+                'count':r.body.hits.total,
+                'result':r.body.hits.hits
+            });
+        }else{
+            cb(500,'storage error');
+        }
+    });
+}
+
+
+user.branch = function (userIdentity, dPath, cb) {
+    user.get(userIdentity, function (e, r) {
+        if(!e){
+            //cb(null,r);
+            let result = r;
+            let dArr = dPath.split('/');
+            while(dArr.length>1){
+                dArr.shift();
+                result = result[dArr[0]];
+            }
+            cb(null ,result);
+        }else{
+            cb(e,r);
+        }
+    });
+};
 
 
 module.exports = user;

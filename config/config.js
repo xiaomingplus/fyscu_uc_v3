@@ -36,5 +36,8 @@ module.exports = {
         'port':6379
       }
     }
+  },
+  'params':{
+      'SP_LOGIN_SIGN_TIME_LIMIT':1000 * 3600
   }
 };

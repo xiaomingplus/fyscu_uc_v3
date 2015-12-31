@@ -2,98 +2,65 @@
  * Created by lanhao on 15/5/17.
  */
 'use strict';
-
-let nodedb = require('../node_modules/nodedb')({
-    'path': './db'
-});
-let appInfo = global.appinfo;
+let async = require('async');
+let userModel = require('../models/user');
+let appModel = require('../models/app');
 let redis = global.app.libs.redis;
 
-let User = {};
+let Api = {};
 
-User.setter = function (req, res) {
-    let appId = req.body.appId;
-    let appKey = req.body.appKey;
-    if (appInfo[appId] && (appInfo[appId].appkey == appKey)) {
-        let uid = req.body.uid;
-        let accessToken = req.body.accessToken;
-        let path = req.body.path;
-        let data = req.body.data;
-        let index = req.body.index;
-        console.log(index)
-        User._filter(uid, accessToken, function (e, r) {
-            if (!e) {
-                if (path[0] !== '/') {
-                    path = '/' + path;
-                }
-                nodedb.put('/' + uid + path, data, index, function (e1, r1) {
-                    if(e1){
-                        res.json(501,e1,'');
+Api.get = function(req,res){
+    let appId = req.headers.appid;
+    let account = req.headers.account;
+    let token = req.headers.token;
+    let dPath = req.body.path;
+    async.waterfall([
+        function(callback){
+            // filter
+            Api._filter(account,token, function (e, r) {
+                if(!e){
+                    if(r && (r.token == token)){
+                        callback(null,null);
                     }else{
-                        res.json(200,{},'');
+                        callback(402,'授权过期');
+                    }
+                }else{
+                    callback(500,JSON.stringify(e));
+                }
+            });
+        },
+        function(flow,callback){
+            //data
+            if(appModel.checkPermission(appId,dPath)){
+                userModel.branch(account,dPath, function (e, r) {
+                    if(!e){
+                        callback(null,r);
+                    }else{
+                        callback(500,'databases error(1)');
                     }
                 });
-            } else {
-                res.json(e, {}, r);
+            }else{
+                callback(403,'权限不足');
             }
-        });
-    } else {
-        res.json(403, {}, '权限不足');
-    }
-}
-
-User.info = function (req, res) {
-    let appId = req.query.appId;
-    let appKey = req.query.appKey;
-    if (appInfo[appId] && (appInfo[appId].appkey == appKey)) {
-        let uid = req.query.uid;
-        let accessToken = req.query.accessToken;
-        User._filter(uid, accessToken, function (e, r) {
-            if (!e) {
-                nodedb.get('/' + uid , function (e1, r1) {
-                    res.json(200, r1);
-                });
-            } else {
-                res.json(e, {}, r);
-            }
-        });
-    } else {
-        res.json(403, {}, '权限不足');
-    }
-};
-User.getuserinfo = User.info;
-
-User.check = function (req, res) {
-    let appId = req.query.appId;
-    let appKey = req.query.appKey;
-    if (appInfo[appId] && (appInfo[appId].appkey == appKey)) {
-        let uid = req.query.uid;
-        let accessToken = req.query.accessToken;
-        User._filter(uid, accessToken, function (e, r) {
-            if (!e) {
-                res.json(200, r1);
-            } else {
-                res.json(e, {}, r);
-            }
-        });
-    } else {
-        res.json(403, {}, '权限不足');
-    }
-}
-
-User._filter = function (uid, token, cb) {
-    redis.getObj('session:' + uid, function (e, r) {
-        //console.log(e,r)
-        if (!e) {
-            if (r && r.accessToken === token) {
-                cb(null, null);
-            } else {
-                cb(403, '登录过期')
-            }
-        } else {
-            cb(501, e);
+        },
+        function (flow, callback) {
+            // log
+            callback(null,flow);
+        }
+    ], function (err, ret) {
+        if(err){
+            res.json(err,{},ret);
+        }else{
+            res.json(200,ret);
         }
     });
 }
 
-module.exports = User;
+Api._filter = function (account, token, cb) {
+    redis.getObj('session:'+account, function (e, r) {
+        cb(e,r);
+    });
+}
+
+
+module.exports = Api;
