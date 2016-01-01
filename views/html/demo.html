@@ -10,19 +10,58 @@
     </style>
 </head>
 <body>
- <a href="http://127.0.0.1:9528/?appid=1000">go to FYUC for login</a>
+ <a href="http://127.0.0.1:9528/?appid=1000&callback=http://127.0.0.1:9528/help/demo">go to FYUC for login</a>
 <p id="result">
 
 </p>
+
+<button id="contact">contact</button>
+<button id="accounts">account</button>
+<button id="preferences">preferences</button>
+<p id="data">
+
+</p>
+
 </body>
+<script type="text/javascript" src="http://s.amazeui.org/assets/2.x/js/jquery.min.js"></script>
 <script>
+
     var search = window.location.search;
 
     var data = parse(search);
+    if(data.account && data.token){
+        document.getElementById('result').innerHTML = 'uid:<i>'+data.account+'</i>  ,  accessToken:<i>'+data.token+'</i>';
 
-    if(data.uid && data.accessToken){
-        document.getElementById('result').innerHTML = 'uid:<i>'+data.uid+'</i>  ,  accessToken:<i>'+data.accessToken+'</i>';
     }
+
+    $('#contact').click(function(){
+        $.ajax({
+            method: "GET",
+            url:'/help/poxy?t=contact',
+            success: function (data) {
+                $('#data').html(JSON.stringify(data));
+            }
+        });
+    });
+    $('#accounts').click(function(){
+        $.ajax({
+            method: "GET",
+            url:'/help/poxy?t=accounts',
+            success: function (data) {
+                $('#data').html(JSON.stringify(data));
+            }
+        });
+    });
+    $('#preferences').click(function(){
+        $.ajax({
+            method: "GET",
+            url:'/help/poxy?t=preferences',
+            success: function (data) {
+                $('#data').html(JSON.stringify(data));
+            }
+        });
+    });
+
 
     function parse(queryString){
         var data = {};

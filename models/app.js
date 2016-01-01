@@ -90,7 +90,12 @@ app.permission = function (appId, permissions, cb) {
     }
 };
 
-app.checkPermission = function (appId, dPath) {
+app.checkPermission = function (appId,appKey, dPath) {
+    if(app.all[appId] && (app.all[appId].appKey == appKey)){
+        if(app.all[appId].role=='admin') return true;
+    }else{
+        return false;
+    }
     let _appPermission = app.all[appId]?app.all[appId].permission:null;
     if(_appPermission){
         let sig = false;

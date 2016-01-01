@@ -11,9 +11,11 @@ let Api = {};
 
 Api.get = function(req,res){
     let appId = req.headers.appid;
+    let appKey = req.headers.appkey;
     let account = req.headers.account;
     let token = req.headers.token;
     let dPath = req.body.path;
+
     async.waterfall([
         function(callback){
             // filter
@@ -31,7 +33,7 @@ Api.get = function(req,res){
         },
         function(flow,callback){
             //data
-            if(appModel.checkPermission(appId,dPath)){
+            if(appModel.checkPermission(appId,appKey,dPath)){
                 userModel.branch(account,dPath, function (e, r) {
                     if(!e){
                         callback(null,r);
