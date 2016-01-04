@@ -11,7 +11,7 @@ http.headers.appId = 1000;
 var url = 'http://127.0.0.1:9528'
 
 http.get(url+'/api/get',{
-    'path':'/contact'
+    'path':'/'
 }, function (e, r) {
    console.log(r.body.data);
 });

@@ -159,14 +159,14 @@ access.reg = function (req, res) {
             userModel.add(account,{
                 'contact': {
                     'tel': [{
-                        'value': account,
-                        'note': ''
+                        'tel_value': account,
+                        'tel_note': '注册'
                     }]
                 },
                 'accounts':{
                     'fyuc':[{
-                        'u':account,
-                        'p':password
+                        'fyuc_u':account,
+                        'fyuc_p':password
                     }]
                 },
                 'preferences':{
