@@ -8,6 +8,41 @@ var esHost = 'http://121.41.85.236:9200';
 
 let user = {};
 
+user.model = {
+    'account':{
+        'fyuc':[
+            {
+                u:'string',
+                p:'md5_hash'
+            }// ...
+        ]//...
+    },
+
+    'contact':{
+        'tel':[
+            {
+                'value':'110',
+                'note':'police'
+            }//...
+        ],
+        'email':[
+            {
+                'value':'admin@lanhao.name',
+                'note':'xiaolan'
+            }//...
+        ]
+    },
+    'preference':{
+        'app':[
+            '1000'
+            //...
+        ],
+        'color':[
+            'red'
+        ]
+        //...
+    }
+};
 
 user.add = function (userIdentify,data,cb) {
     if(userIdentify && data){
@@ -46,6 +81,29 @@ user.add = function (userIdentify,data,cb) {
     }
 };
 
+user.set = function (userIdentify,data,cb) {
+    if(userIdentify && data){
+        async.waterfall([
+            function (callback) {
+                http.put(esHost+'/uc/users/'+userIdentify,data, function (e, r) {
+                    if(!e){
+                        callback(null,r?r.body:null);
+                    }else{
+                        callback(e,r);
+                    }
+                });
+            }
+        ], function (err, ret) {
+            if(!err){
+                cb(null,data);
+            }else{
+                cb(err,ret);
+            }
+        });
+    }else{
+        cb(400,'参数有误');
+    }
+};
 
 user.get = function (userIdentity, cb) {
     http.get(esHost+'/uc/users/'+userIdentity,{}, function (e, r) {
@@ -132,14 +190,151 @@ user.branch = function (userIdentity, dPath, cb) {
             let dArr = dPath.split('/');
             while(dArr.length>1){
                 dArr.shift();
-                result = result[dArr[0]];
+                if(dArr[0]!='') {
+                    result = result[dArr[0]];
+                }
             }
-            cb(null ,result);
+            cb(null ,result?result:null);
         }else{
             cb(e,r);
         }
     });
 };
 
+user.update = function(userIdentity,dPath,dData,cb){
+    user.get(userIdentity, function (e, r) {
+        if(!e){
+            let dArr = dPath.split('/');
+            let _tempNode = r;
+            let _parentNode = null;
+            let _parentKey = null;
+            let sig = true;
+            let errorMsg = '';
+            while(dArr.length > 1){
+                dArr.shift();
+                if(dArr[0] != ''){
+                    _parentNode = _tempNode;
+                    _parentKey = dArr[0];
+                    _tempNode = _tempNode[dArr[0]];
+                    if(_tempNode == undefined){
+                        errorMsg += '不存在这个数据';
+                        sig = false;
+                        break;
+                    }
+                }
+            }
+            if(Array.isArray(_tempNode)){
+                //数组类型不能set
+                errorMsg += '数组类型不能set';
+                sig = false;
+            }
 
+            if(sig && (typeof _tempNode == typeof dData)){
+                _parentNode[_parentKey] = dData;
+                user.set(userIdentity,r, function (e1, r1) {
+                    if(!e1){
+                        cb(null,r);
+                    }else{
+                        cb(e1,r1);
+                    }
+                });
+            }else{
+                cb(400,'数据结构不允许,'+errorMsg);
+            }
+        }else{
+            cb(e,r);
+        }
+    });
+}
+
+
+user.append = function (userIdentity, dPath, dData, cb) {
+    user.get(userIdentity, function (e, r) {
+        if(!e){
+            let dArr = dPath.split('/');
+            let _modelNode = user.model;
+            let _tempNode = r;
+            let _parentNode = null;
+            let _parentKey = null;
+            let sig = true;
+            let errorMsg = '';
+            while(dArr.length > 1){
+                dArr.shift();
+                if(dArr[0] != ''){
+                    _modelNode = _modelNode[dArr[0]];
+                    _parentNode = _tempNode;
+                    _parentKey = dArr[0];
+                    _tempNode = _tempNode[dArr[0]];
+                    if(_modelNode == undefined){
+                        errorMsg += '不存在这个数据';
+                        sig = false;
+                        break;
+                    }
+                }
+            }
+
+            if(sig &&Array.isArray(_modelNode) && (typeof _modelNode[0] == typeof dData)){
+                if(_parentNode[_parentKey]==undefined){
+                    _parentNode[_parentKey] = [];
+                }
+                _parentNode[_parentKey].push(dData);
+
+                user.set(userIdentity,r, function (e1, r1) {
+                    if(!e1){
+                        cb(null,r);
+                    }else{
+                        cb(e1,r1);
+                    }
+                });
+            }else{
+                cb(400,'数据结构不允许,'+errorMsg);
+            }
+        }else{
+            cb(e,r);
+        }
+    });
+}
+
+//user.append(18688124774,'/contact/email',{
+//    value:'admin_lanhao.name',
+//    note:'personal'
+//}, function (e, r) {
+//    console.log(e,r);
+//})
+
+//user.match('/contact/email/value','admin_lanhao.name', function (e, r) {
+//    console.log(e,r);
+//})
+
+//user.branch(18688124774,'/contact/email', function (e, r) {
+//    console.log(e,r);
+//})
+
+//user.del(18688124774, function (e, r) {
+//    console.log(e,r);
+//})
+
+//var account = 18688124774;
+//
+//user.add(account,{
+//    'contact': {
+//        'tel': [{
+//            'value': account,
+//            'note': '注册'
+//        }]
+//    },
+//    'account':{
+//        'fyuc':[{
+//            'u':account,
+//            'p':md5('' + account + '2603891')
+//        }]
+//    },
+//    'preference':{
+//        'app':[
+//            1000
+//        ]
+//    }
+//}, function (e, r) {
+//    console.log(e,r);
+//})
 module.exports = user;
