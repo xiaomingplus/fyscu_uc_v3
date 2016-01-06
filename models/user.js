@@ -233,7 +233,13 @@ user.edit = function(userIdentity,dPath,dData,cb){
             }
 
             if(sig && (typeof _tempNode == typeof dData)){
-                _parentNode[_parentKey] = dData;
+                if(typeof dData == 'object'){
+                    for(let k in dData){
+                        _parentNode[_parentKey][k] = dData[k];
+                    }
+                }else {
+                    _parentNode[_parentKey] = dData;
+                }
                 user.set(userIdentity,r, function (e1, r1) {
                     if(!e1){
                         cb(null,r);
