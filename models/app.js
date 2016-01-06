@@ -90,8 +90,8 @@ app.permission = function (appId, permissions, cb) {
     }
 };
 
-app.checkPermission = function (appId, dPath) {
-    let _appPermission = app.all[appId]?app.all[appId].permission:null;
+app.checkPermission = function (appId,appKey, dPath) {
+    let _appPermission = (app.all[appId] && app.all[appId].appKey == appKey)?app.all[appId].permission:null;
     if(_appPermission){
         let sig = false;
         for(let k in _appPermission){

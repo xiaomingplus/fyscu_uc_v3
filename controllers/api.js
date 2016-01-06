@@ -11,6 +11,7 @@ let Api = {};
 
 Api.get = function(req,res){
     let appId = req.headers.appid;
+    let appKey = req.headers.appkey;
     let account = req.headers.account;
     let token = req.headers.token;
     let dPath = req.body.path;
@@ -31,7 +32,7 @@ Api.get = function(req,res){
         },
         function(flow,callback){
             //data
-            if(appModel.checkPermission(appId,dPath)){
+            if(appModel.checkPermission(appId,appKey,dPath)){
                 userModel.branch(account,dPath, function (e, r) {
                     if(!e){
                         callback(null,r);
@@ -54,6 +55,15 @@ Api.get = function(req,res){
             res.json(200,ret);
         }
     });
+}
+
+Api.set = function(req,res){
+    let appId = req.headers.appid;
+    let appKey = req.headers.appkey;
+    let account = req.headers.account;
+    let token = req.headers.token;
+    let dPath = req.body.path;
+
 }
 
 Api._filter = function (account, token, cb) {
