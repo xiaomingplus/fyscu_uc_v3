@@ -134,10 +134,10 @@ user.del = function (userIdentity,cb) {
 
 user.auth = function(account,password,cb){
     if(account && password){
-        user.match('/accounts/fyuc/u',account, function (e, r) {
+        user.match('/account/fyuc/u',account, function (e, r) {
             if(!e){
                 if(r.count > 0){
-                    let fyuc = (r.result && r.result.length)?r.result[0]._source.accounts.fyuc[0]:{};
+                    let fyuc = (r.result && r.result.length)?r.result[0]._source.account.fyuc[0]:{};
                     if(fyuc.p == md5(''+account+password)){
                         cb(null,r.result[0]);
                     }else{
@@ -337,4 +337,7 @@ user.append = function (userIdentity, dPath, dData, cb) {
 //}, function (e, r) {
 //    console.log(e,r);
 //})
+
+
+
 module.exports = user;
