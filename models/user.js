@@ -144,6 +144,7 @@ user.auth = function(account,password,cb){
                         cb(402,'授权失败');
                     }
                 }else{
+
                     cb(404,'account not found');
                 }
             }else{
@@ -201,7 +202,9 @@ user.branch = function (userIdentity, dPath, cb) {
     });
 };
 
-user.update = function(userIdentity,dPath,dData,cb){
+
+
+user.edit = function(userIdentity,dPath,dData,cb){
     user.get(userIdentity, function (e, r) {
         if(!e){
             let dArr = dPath.split('/');
@@ -295,6 +298,7 @@ user.append = function (userIdentity, dPath, dData, cb) {
     });
 }
 
+
 //user.append(18688124774,'/contact/email',{
 //    value:'admin_lanhao.name',
 //    note:'personal'
@@ -337,7 +341,4 @@ user.append = function (userIdentity, dPath, dData, cb) {
 //}, function (e, r) {
 //    console.log(e,r);
 //})
-
-
-
 module.exports = user;

@@ -95,7 +95,7 @@ app.checkPermission = function (appId,appKey, dPath) {
     if(_appPermission){
         let sig = false;
         for(let k in _appPermission){
-            sig = sig || (dPath==_appPermission[k]);
+            sig = sig || dPath.startsWith(_appPermission[k]);
         }
         return sig
     }else{
