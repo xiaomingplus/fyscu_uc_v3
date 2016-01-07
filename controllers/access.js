@@ -200,6 +200,38 @@ access.reg = function (req, res) {
     }
 };
 
+access.auth = function(req,res){
+    let account = req.query.account;
+    let token = req.query.token;
+    let appId = req.query.appId;
+    let appKey = req.query.appKey;
+    async.waterfall([
+        function (callback) {
+            let _app = appModel.all[appId];
+            console.log(_app);
+            if(_app && (_app.appKey == appKey)){
+                callback(null,null);
+            }else{
+                callback(402,'app身份授权失败');
+            }
+        },
+        function (flow, callback) {
+            redis.getObj('session:'+account, function (e, r) {
+                if(!e){
+                    callback(null,null);
+                }else{
+                    callback(403,'用户授权失败');
+                }
+            });
+        }
+    ], function (err, ret) {
+        if(!err){
+            res.json(200);
+        }else{
+            res.json(err,ret);
+        }
+    });
+}
 
 module.exports = access;
 
