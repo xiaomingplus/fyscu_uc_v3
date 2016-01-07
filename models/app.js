@@ -91,16 +91,20 @@ app.permission = function (appId, permissions, cb) {
 };
 
 app.checkPermission = function (appId,appKey, dPath) {
+<<<<<<< HEAD
     if(app.all[appId] && (app.all[appId].appKey == appKey)){
         if(app.all[appId].role=='admin') return true;
     }else{
         return false;
     }
     let _appPermission = app.all[appId]?app.all[appId].permission:null;
+=======
+    let _appPermission = (app.all[appId] && app.all[appId].appKey == appKey)?app.all[appId].permission:null;
+>>>>>>> develop
     if(_appPermission){
         let sig = false;
         for(let k in _appPermission){
-            sig = sig || (dPath==_appPermission[k]);
+            sig = sig || dPath.startsWith(_appPermission[k]);
         }
         return sig
     }else{

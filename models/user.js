@@ -9,31 +9,30 @@ var esHost = 'http://121.41.85.236:9200';
 let user = {};
 
 user.model = {
-    'accounts':{
+    'account':{
         'fyuc':[
             {
-                fyuc_u:'string',
-                fyuc_p:'md5_hash'
+                u:'string',
+                p:'md5_hash'
             }// ...
         ]//...
     },
-
     'contact':{
         'tel':[
             {
-                'tel_value':'110',
-                'tel_note':'police'
+                'value':'110',
+                'note':'police'
             }//...
         ],
         'email':[
             {
-                'email_value':'admin@lanhao.name',
-                'email_note':'xiaolan'
+                'value':'admin@lanhao.name',
+                'note':'xiaolan'
             }//...
         ]
     },
-    'preferences':{
-        'apps':[
+    'preference':{
+        'app':[
             '1000'
             //...
         ],
@@ -134,16 +133,17 @@ user.del = function (userIdentity,cb) {
 
 user.auth = function(account,password,cb){
     if(account && password){
-        user.match('/accounts/fyuc/u',account, function (e, r) {
+        user.match('/account/fyuc/u',account, function (e, r) {
             if(!e){
                 if(r.count > 0){
-                    let fyuc = (r.result && r.result.length)?r.result[0]._source.accounts.fyuc[0]:{};
+                    let fyuc = (r.result && r.result.length)?r.result[0]._source.account.fyuc[0]:{};
                     if(fyuc.p == md5(''+account+password)){
                         cb(null,r.result[0]);
                     }else{
                         cb(402,'授权失败');
                     }
                 }else{
+
                     cb(404,'account not found');
                 }
             }else{
@@ -194,7 +194,7 @@ user.branch = function (userIdentity, dPath, cb) {
                     result = result[dArr[0]];
                 }
             }
-            cb(null ,result);
+            cb(null ,result?result:null);
         }else{
             cb(e,r);
         }
@@ -295,7 +295,107 @@ user.append = function (userIdentity, dPath, dData, cb) {
     });
 }
 
-user.update(18688124774,'/contact/tel/0/tel_note','china union', function (e, r) {
-    console.log(e,r);
-})
+
+
+user.edit = function(userIdentity,dPath,dData,cb){
+    user.get(userIdentity, function (e, r) {
+        if(!e){
+            let dArr = dPath.split('/');
+            let _tempNode = r;
+            let _parentNode = null;
+            let _parentKey = null;
+            let sig = true;
+            let errorMsg = '';
+            while(dArr.length > 1){
+                dArr.shift();
+                if(dArr[0] != ''){
+                    _parentNode = _tempNode;
+                    _parentKey = dArr[0];
+                    _tempNode = _tempNode[dArr[0]];
+                    if(_tempNode == undefined){
+                        errorMsg += '不存在这个数据';
+                        sig = false;
+                        break;
+                    }
+                }
+            }
+            if(Array.isArray(_tempNode)){
+                //数组类型不能set
+                errorMsg += '数组类型不能set';
+                sig = false;
+            }
+
+            if(sig && (typeof _tempNode == typeof dData)){
+                if(typeof dData == 'object'){
+                    for(let k in dData){
+                        _parentNode[_parentKey][k] = dData[k];
+                    }
+                }else {
+                    _parentNode[_parentKey] = dData;
+                }
+                user.set(userIdentity,r, function (e1, r1) {
+                    if(!e1){
+                        cb(null,r);
+                    }else{
+                        cb(e1,r1);
+                    }
+                });
+            }else{
+                cb(400,'数据结构不允许,'+errorMsg);
+            }
+        }else{
+            cb(e,r);
+        }
+    });
+}
+
+
+user.append = function (userIdentity, dPath, dData, cb) {
+    user.get(userIdentity, function (e, r) {
+        if(!e){
+            let dArr = dPath.split('/');
+            let _modelNode = user.model;
+            let _tempNode = r;
+            let _parentNode = null;
+            let _parentKey = null;
+            let sig = true;
+            let errorMsg = '';
+            while(dArr.length > 1){
+                dArr.shift();
+                if(dArr[0] != ''){
+                    _modelNode = _modelNode[dArr[0]];
+                    _parentNode = _tempNode;
+                    _parentKey = dArr[0];
+                    _tempNode = _tempNode[dArr[0]];
+                    if(_modelNode == undefined){
+                        errorMsg += '不存在这个数据';
+                        sig = false;
+                        break;
+                    }
+                }
+            }
+
+            if(sig &&Array.isArray(_modelNode) && (typeof _modelNode[0] == typeof dData)){
+                if(_parentNode[_parentKey]==undefined){
+                    _parentNode[_parentKey] = [];
+                }
+                _parentNode[_parentKey].push(dData);
+
+                user.set(userIdentity,r, function (e1, r1) {
+                    if(!e1){
+                        cb(null,r);
+                    }else{
+                        cb(e1,r1);
+                    }
+                });
+            }else{
+                cb(400,'数据结构不允许,'+errorMsg);
+            }
+        }else{
+            cb(e,r);
+        }
+    });
+}
+
+
 module.exports = user;
