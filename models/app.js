@@ -119,4 +119,22 @@ app.update = function (appId, data, cb) {
     }
 }
 
+app.checkUrl = function (appId,url) {
+    let _app = app.all[appId];
+    if(_app){
+        if(_app.role == 'admin'){
+            return true;
+        }
+        let _domain = _app.domain;
+        let r = /\/\/(.*?)\//.exec(url);
+        if(r && r[1] && r[1].endsWith(_domain)){
+            return true;
+        }else{
+            return false;
+        }
+    }else{
+        return false;
+    }
+}
+
 module.exports = app;
