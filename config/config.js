@@ -12,10 +12,10 @@ module.exports = {
     'mysql': {
       'import': 0,
       'config': {
-        "host": "121.41.85.236",
+        "host": "127.0.0.1",
         "port": "3306",
-        "user": "ciwei",
-        "password": "123456",
+        "user": "root",
+        "password": "",
         "database": "platform_ng"
       }
     },
@@ -32,7 +32,7 @@ module.exports = {
     'redis':{
       'import':1,
       'config':{
-        'host':'121.41.85.236',
+        'host':'127.0.0.1',
         'port':6379
       }
     }
