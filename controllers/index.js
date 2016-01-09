@@ -21,4 +21,10 @@ Controller.index = function (req, res) {
 Controller.error = function (req, res) {
     res.render('error.html',{'msg':'ceshi '});
 }
+
+Controller.debug = function(req,res){
+    console.log(req.headers);
+    res.json(200,req.body,'debug ok');
+}
+
 module.exports = Controller;

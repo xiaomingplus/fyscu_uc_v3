@@ -31,8 +31,12 @@ access.login = function (req, res) {
                redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
                    if(_e)console.log(_e);
                });
-               redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&token='+token:redirectUrl+'?account='+account+'&token='+token;
-               res.redirect(redirectUrl);
+               if(appModel.checkUrl(appId,redirectUrl)) {
+                   redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&token='+token:redirectUrl+'?account='+account+'&token='+token;
+                   res.redirect(redirectUrl);
+               }else{
+                   res.render('error.html',{'msg':'回调地址似乎不被允许'});
+               }
            } else{
                res.render('error.html',{'msg':'发生错误大家也是不想的，多从自己身上找原因。'+e+':'+r});
            }
@@ -185,9 +189,12 @@ access.reg = function (req, res) {
                         if(_e)console.log(_e);
                     });
 
-                    redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&token='+token:redirectUrl+'?account='+account+'&token='+token;
-
-                    res.redirect(redirectUrl);
+                    if(appModel.checkUrl(appId,redirectUrl)) {
+                        redirectUrl = (redirectUrl.indexOf('?') > 0) ? redirectUrl + '&account=' + account + '&token=' + token : redirectUrl + '?account=' + account + '&token=' + token;
+                        res.redirect(redirectUrl);
+                    }else{
+                        res.render('error.html',{'msg':'回调地址似乎不被允许'});
+                    }
                 }else{
                     res.render('error.html',{'msg':'怎么死活就注册不上呢？'});
                 }

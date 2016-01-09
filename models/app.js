@@ -27,6 +27,7 @@ app.init = function () {
                 for(let k in arr){
                     app.all[arr[k]['_id']] = arr[k]['_source'];
                 }
+                console.log('loading appinfo ok');
             }catch(ex){
                 console.log(ex);
             }
@@ -123,6 +124,24 @@ app.update = function (appId, data, cb) {
         });
     }else{
         cb(400,'参数有误');
+    }
+}
+
+app.checkUrl = function (appId,url) {
+    let _app = app.all[appId];
+    if(_app){
+        if(_app.role == 'admin'){
+            return true;
+        }
+        let _domain = _app.domain;
+        let r = /\/\/(.*?)\//.exec(url);
+        if(r && r[1] && r[1].endsWith(_domain)){
+            return true;
+        }else{
+            return false;
+        }
+    }else{
+        return false;
     }
 }
 

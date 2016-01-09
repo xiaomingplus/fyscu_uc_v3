@@ -23,8 +23,7 @@ Api.get = function(req,res){
     let appKey = req.headers.appkey;
     let account = req.headers.account;
     let token = req.headers.token;
-    let dPath = req.body.path;
-
+    let dPath = req.body.path?req.body.path:'';
     async.waterfall([
         function(callback){
             // filter
@@ -67,11 +66,7 @@ Api.get = function(req,res){
     });
 }
 
-<<<<<<< HEAD
-Api.set = function(req,res){
-=======
 Api.post = function(req,res){
->>>>>>> develop
     let appId = req.headers.appid;
     let appKey = req.headers.appkey;
     let account = req.headers.account;
@@ -93,17 +88,6 @@ Api.post = function(req,res){
                 }
             });
         },
-<<<<<<< HEAD
-        function (flow, callback) {
-            if(appModel.all[appId].role == 'admin'){
-
-            }else{
-                callback(403,'权限不足');
-            }
-        }
-    ], function (err, ret) {
-
-=======
         function(flow,callback){
             //data
             if(appModel.checkPermission(appId,appKey,dPath)){
@@ -178,7 +162,6 @@ Api.put = function(req,res){
         }else{
             res.json(200,ret);
         }
->>>>>>> develop
     });
 }
 
