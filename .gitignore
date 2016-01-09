@@ -2,3 +2,4 @@
 config/config.js
 test.js
 node_modules/*
+kit/php/.idea/*

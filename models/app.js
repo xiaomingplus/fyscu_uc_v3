@@ -27,6 +27,7 @@ app.init = function () {
                 for(let k in arr){
                     app.all[arr[k]['_id']] = arr[k]['_source'];
                 }
+                console.log('loading appinfo ok');
             }catch(ex){
                 console.log(ex);
             }
