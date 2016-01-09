@@ -23,7 +23,7 @@ Api.get = function(req,res){
     let appKey = req.headers.appkey;
     let account = req.headers.account;
     let token = req.headers.token;
-    let dPath = req.body.path;
+    let dPath = req.body.path?req.body.path:'';
     async.waterfall([
         function(callback){
             // filter

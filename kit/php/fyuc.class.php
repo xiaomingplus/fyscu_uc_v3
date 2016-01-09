@@ -14,6 +14,10 @@ class FYUC
 
     private $_appKey = null;
 
+    private $_account = null;
+
+    private  $_token = null;
+
     public function __construct($appId,$appKey){
         $this->_appId = $appId;
         $this->_appKey = $appKey;
@@ -28,7 +32,7 @@ class FYUC
      * @return string url
      */
     public function login($callback,$redirect = true){
-        $url = self::UC_HOST.'/appId='.$this->_appId.'&callback='.urlencode($callback);
+        $url = self::UC_HOST.'/?appId='.$this->_appId.'&callback='.urlencode($callback);
         if($redirect){
             header('location:'.$url);
         }else{
@@ -36,6 +40,28 @@ class FYUC
         }
     }
 
+    public function processCallback(){
+        $this->_account = $_GET['account'];
+        $this->_token = $_GET['token'];
+        if($this->_account && $this->_token){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function getUserInfo($path){
+        $url = self::UC_HOST.'/api';
+        $ret = httpAgent::GET($url,array(
+            'appid'=>$this->_appId,
+            'appkey'=>$this->_appKey,
+            'account'=>$this->_account,
+            'token'=>$this->_token
+        ),array(
+            'path'=>$path
+        ));
+        return $ret;
+    }
 }
 
 class httpAgent{
@@ -46,6 +72,8 @@ class httpAgent{
         curl_setopt($ch, CURLOPT_URL, $url);
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
@@ -88,10 +116,11 @@ class httpAgent{
     }
 }
 
-$r = httpAgent::GET('http://127.0.0.1:9528/index/debug',array(
-    'appid'=>1000,
-    'appkey'=>'29322987bd616276e8d4da9754cb0903'
-),array(
-    'a'=>11
-));
-echo $r.PHP_EOL;
+$r = new FYUC(1000,'29322987bd616276e8d4da9754cb0903');
+$_GET = array(
+    'account'=>'18688124774',
+    'token'=>'c5d224579e296603cb1e4d30483e3842'
+);
+$r->processCallback();
+
+var_dump($r->getUserInfo('/contact/tel'));
