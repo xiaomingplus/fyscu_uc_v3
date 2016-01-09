@@ -1,5 +1,5 @@
 .idea/*
-config/config.js
+config/*
 test.js
 node_modules/*
 kit/php/.idea/*
