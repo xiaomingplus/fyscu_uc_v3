@@ -23,8 +23,13 @@ Controller.error = function (req, res) {
 }
 
 Controller.debug = function(req,res){
-    console.log(req.headers);
-    res.json(200,req.body,'debug ok');
+
+    res.json(200,{
+        'query':req.query,
+        'body':req.body,
+        'method':req.method,
+        'headers':req.headers
+    },'debug ok');
 }
 
 module.exports = Controller;

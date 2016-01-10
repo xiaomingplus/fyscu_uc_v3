@@ -18,9 +18,13 @@ class FYUC
 
     private  $_token = null;
 
+    private $_http_headers = array();
+
     public function __construct($appId,$appKey){
         $this->_appId = $appId;
         $this->_appKey = $appKey;
+        $this->_http_headers['appid'] = $appId;
+        $this->_http_headers['appkey'] = $appKey;
     }
 
     private function appInfo(){
@@ -40,25 +44,43 @@ class FYUC
         }
     }
 
+    /**
+     * @return bool
+     */
     public function processCallback(){
         $this->_account = $_GET['account'];
         $this->_token = $_GET['token'];
         if($this->_account && $this->_token){
+            $this->_http_headers['account'] = $this->_account;
+            $this->_http_headers['token'] = $this->_token;
             return true;
         }else{
             return false;
         }
     }
 
+    /**
+     * @param $path dPath
+     * @return mixed
+     */
     public function getUserInfo($path){
         $url = self::UC_HOST.'/api';
-        $ret = httpAgent::GET($url,array(
-            'appid'=>$this->_appId,
-            'appkey'=>$this->_appKey,
-            'account'=>$this->_account,
-            'token'=>$this->_token
-        ),array(
+        $ret = httpAgent::GET($url,$this->_http_headers,array(
             'path'=>$path
+        ));
+        return $ret;
+    }
+
+    /**
+     * @param $path dPath
+     * @param $data string|number|mixed
+     * @return boolean
+     */
+    public function modifyUserInfo($path,$data){
+        $url = self::UC_HOST.'/api';
+        $ret = httpAgent::PUT($url,$this->_http_headers,array(
+            'path'=>$path,
+            'data'=>$data
         ));
         return $ret;
     }
@@ -72,6 +94,8 @@ class httpAgent{
         curl_setopt($ch, CURLOPT_URL, $url);
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        curl_setopt($ch, CURLOPT_TIMEOUT,10);
 
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
 
@@ -98,7 +122,35 @@ class httpAgent{
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT,10);
+
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+        $CURL_HEADERS = array('Content-Type: application/json');
+        if(is_array($headers)){
+            foreach($headers as $k=>$v){
+                $CURL_HEADERS[] = $k.':'.$v;
+            }
+        }
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $CURL_HEADERS);
+
+        $output = curl_exec($ch);
+        curl_close($ch);
+
+        return $output;
+    }
+
+    public static function PUT($url,$headers = array(),$data = array()){
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        curl_setopt($ch, CURLOPT_TIMEOUT,10);
+
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
         $CURL_HEADERS = array('Content-Type: application/json');
@@ -123,4 +175,6 @@ $_GET = array(
 );
 $r->processCallback();
 
-var_dump($r->getUserInfo('/contact/tel'));
+var_dump($r->getUserInfo('/contact/tel/1'));
+
+//var_dump($r->modifyUserInfo('/contact/tel/1/value','119'));
