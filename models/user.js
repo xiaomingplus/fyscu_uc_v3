@@ -201,6 +201,43 @@ user.branch = function (userIdentity, dPath, cb) {
     });
 };
 
+user.delBranch = function (userIdentity, dPath, cb) {
+    user.get(userIdentity, function (e, r) {
+        if(!e){
+            //cb(null,r);
+            let result = r;
+            let _parentNode = r;
+            let dArr = dPath.split('/');
+            while(dArr.length>1){
+                dArr.shift();
+                if(dArr[0]!='') {
+                    _parentNode = result;
+                    result = result[dArr[0]];
+                }
+            }
+            if(result){
+                if(Array.isArray(_parentNode)) {
+                    _parentNode.splice(dArr[0], 1);
+                    user.set(userIdentity, r, function (e1, r1) {
+                        if (!e1) {
+                            cb(null, r);
+                        } else {
+                            cb(e1, r1);
+                        }
+                    });
+                }else{
+                    cb(400,'数据结构不允许 '+dPath);
+                }
+            }else{
+                cb(404,'not found');
+            }
+        }else{
+            cb(e,r);
+        }
+    });
+}
+
+
 user.update = function(userIdentity,dPath,dData,cb){
     user.get(userIdentity, function (e, r) {
         if(!e){

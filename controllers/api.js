@@ -164,6 +164,50 @@ Api.put = function(req,res){
     });
 }
 
+Api.delete = function(req,res){
+    let appId = req.headers.appid;
+    let appKey = req.headers.appkey;
+    let account = req.headers.account;
+    let token = req.headers.token;
+    let dPath = req.body.path?req.body.path:'';
+    async.waterfall([
+        function (callback) {
+            // filter
+            Api._filter(account,token, function (e, r) {
+                if(!e){
+                    if(r && (r.token == token)){
+                        callback(null,null);
+                    }else{
+                        callback(402,'授权过期');
+                    }
+                }else{
+                    callback(500,JSON.stringify(e));
+                }
+            });
+        },
+        function (flow, callback) {
+            //data
+            if(appModel.checkPermission(appId,appKey,dPath)){
+                userModel.delBranch(account,dPath, function (e, r) {
+                    if(!e){
+                        callback(null,r);
+                    }else{
+                        callback(500,'databases error(1)');
+                    }
+                });
+            }else{
+                callback(403,'权限不足');
+            }
+        }
+    ], function (err, ret) {
+        if(err){
+            res.json(err,{},ret);
+        }else{
+            res.json(200,ret);
+        }
+    });
+}
+
 Api._filter = function (account, token, cb) {
     redis.getObj('session:'+account, function (e, r) {
         cb(e,r);

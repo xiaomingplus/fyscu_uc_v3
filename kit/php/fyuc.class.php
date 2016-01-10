@@ -35,7 +35,7 @@ class FYUC
      * @param bool|true $redirect 是否直接跳转,false时将返回 login_url
      * @return string url
      */
-    public function login($callback,$redirect = true){
+    public function loginUrl($callback,$redirect = true){
         $url = self::UC_HOST.'/?appId='.$this->_appId.'&callback='.urlencode($callback);
         if($redirect){
             header('location:'.$url);
@@ -81,6 +81,28 @@ class FYUC
         $ret = httpAgent::PUT($url,$this->_http_headers,array(
             'path'=>$path,
             'data'=>$data
+        ));
+        return $ret;
+    }
+
+    /**
+     * @param $path
+     * @param $data
+     * @return mixed
+     */
+    public function appendUserInfo($path,$data){
+        $url = self::UC_HOST.'/api';
+        $ret = httpAgent::POST($url,$this->_http_headers,array(
+            'path'=>$path,
+            'data'=>$data
+        ));
+        return $ret;
+    }
+
+    public function deleteUserInfo($path){
+        $url = self::UC_HOST.'/api';
+        $ret = httpAgent::DELETE($url,$this->_http_headers,array(
+            'path'=>$path
         ));
         return $ret;
     }
@@ -166,6 +188,33 @@ class httpAgent{
 
         return $output;
     }
+
+    public static function DELETE($url,$headers = array(),$data = array()){
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        curl_setopt($ch, CURLOPT_TIMEOUT,10);
+
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+        $CURL_HEADERS = array('Content-Type: application/json');
+        if(is_array($headers)){
+            foreach($headers as $k=>$v){
+                $CURL_HEADERS[] = $k.':'.$v;
+            }
+        }
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $CURL_HEADERS);
+
+        $output = curl_exec($ch);
+        curl_close($ch);
+
+        return $output;
+    }
 }
 
 $r = new FYUC(1000,'29322987bd616276e8d4da9754cb0903');
@@ -175,6 +224,6 @@ $_GET = array(
 );
 $r->processCallback();
 
-var_dump($r->getUserInfo('/contact/tel/1'));
+//var_dump($r->getUserInfo('/contact/tel'));
 
-//var_dump($r->modifyUserInfo('/contact/tel/1/value','119'));
+//var_dump($r->deleteUserInfo('/contact/tel/2'));
