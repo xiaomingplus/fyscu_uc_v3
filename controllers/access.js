@@ -215,7 +215,6 @@ access.auth = function(req,res){
     async.waterfall([
         function (callback) {
             let _app = appModel.all[appId];
-            console.log(_app);
             if(_app && (_app.appKey == appKey)){
                 callback(null,null);
             }else{
@@ -224,7 +223,7 @@ access.auth = function(req,res){
         },
         function (flow, callback) {
             redis.getObj('session:'+account, function (e, r) {
-                if(!e){
+                if(!e && (r.token == token)){
                     callback(null,null);
                 }else{
                     callback(403,'用户授权失败');

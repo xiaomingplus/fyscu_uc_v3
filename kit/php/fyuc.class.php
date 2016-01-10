@@ -51,9 +51,15 @@ class FYUC
         $this->_account = $_GET['account'];
         $this->_token = $_GET['token'];
         if($this->_account && $this->_token){
-            $this->_http_headers['account'] = $this->_account;
-            $this->_http_headers['token'] = $this->_token;
-            return true;
+            $url = self::UC_HOST.'/access/auth?account='.$this->_account.'&token='.$this->_token.'&appId='.$this->_appId.'&appKey='.$this->_appKey;
+            $isLogin = httpAgent::GET($url,array(),array());
+            if($isLogin){
+                $this->_http_headers['account'] = $this->_account;
+                $this->_http_headers['token'] = $this->_token;
+                return true;
+            }else{
+                return false;
+            }
         }else{
             return false;
         }
@@ -217,13 +223,24 @@ class httpAgent{
     }
 }
 
-$r = new FYUC(1000,'29322987bd616276e8d4da9754cb0903');
-$_GET = array(
-    'account'=>'18688124774',
-    'token'=>'c5d224579e296603cb1e4d30483e3842'
-);
-$r->processCallback();
 
+////// usage
+//////全局初始化一个实例
+////$r = new FYUC(1000,'29322987bd616276e8d4da9754cb0903');
+////
+//////使用loginUrl得到登录页面地址,或者直接跳转过去
+////
+//////模拟回调
+////$_GET = array(
+////    'account'=>'18688124774',
+////    'token'=>'c5d224579e296603cb1e4d30483e3842'
+////);
+////
+//////回调url里面掉用这个
+////$r->processCallback();
+//
+//
+////使用各种方法
 //var_dump($r->getUserInfo('/contact/tel'));
+//var_dump($r->getUserInfo('/contact/email'));
 
-//var_dump($r->deleteUserInfo('/contact/tel/2'));
