@@ -30,6 +30,10 @@ fyuc.processCallback = function(query,cb){
     if(account && token){
         httpAgent.get(UC_HOST+'/access/auth?account='+account+'&token='+token+'&appId='+fyuc.appId+'&appKey='+fyuc.appKey,{}, function (e, r) {
             if(!e && r && r.body &&  (r.body.code==200)){
+                httpAgent.headers.account = account;
+                httpAgent.headers.token = token;
+                httpAgent.headers.appId = fyuc.appId;
+                httpAgent.headers.appKey = fyuc.appKey;
                 cb(null,true);
             }else{
                 cb(e,(r && r.body)?r.body:null);
@@ -39,6 +43,19 @@ fyuc.processCallback = function(query,cb){
         cb(401, 'arguments error');
     }
 }
+
+fyuc.getUserInfo = function (branch,cb) {
+    httpAgent.get(UC_HOST+'/api',{
+        'path':branch
+    }, function (e, r) {
+        if(!e && r && r.body &&  (r.body.code==200)){
+            cb(null,r.body.data);
+        }else{
+            cb(e,(r && r.body)?r.body:null);
+        }
+    });
+}
+
 
 module.exports = fyuc.init;
 
