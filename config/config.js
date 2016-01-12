@@ -32,7 +32,7 @@ module.exports = {
     'redis':{
       'import':1,
       'config':{
-        'host':'localhost',
+        'host':'121.41.85.236',
         'port':6379
       }
     }
