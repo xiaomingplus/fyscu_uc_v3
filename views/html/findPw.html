@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <title>重置密码_飞扬用户中心</title>
+
+    <link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.4.2/css/amazeui.min.css" />
+
+    <link rel='stylesheet' href='/css/style.css' />
+
+</head>
+
+<body>
+<div class="header">
+    <div class="am-g">
+        <h1> FYUC 3.0</h1>
+
+    </div>
+    <hr />
+</div>
+<div class="container">
+    <div class="am-tabs" data-am-tabs>
+
+        <div class="am-tabs-bd">
+            <div class="am-g am-tab-panel am-active am-in" id="tab2">
+                <div class="col-sm-centered">
+                    <hr>
+                    <form method="post" class="am-form" action="/access/passwd">
+                        <input type="hidden" name="appId" value="{{appId}}" />
+                        <input type="hidden" name="callback" value="{{callback}}" />
+                        <input type="text" name="account"  value="" placeholder="手机号" pattern="[0-9]{11,11}">
+                        <hr>
+                        <div class="am-input-group">
+                            <input type="text" name="code" class="am-form-field" placeholder="短信验证码" autocomplete="off">
+                            <span class="am-input-group-btn">
+                                <button id="send_btn" class="am-btn am-btn-secondary" type="button">获取</button>
+                            </span>
+                        </div>
+                        <hr>
+                        <input required="required" type="password" name="password"  value="" placeholder="输入新密码" autocomplete="off">
+                        <hr>
+
+                        <div class="am-cf">
+                            <input type="submit" name="submit" value="重置密码" class="am-btn am-btn-block am-btn-primary am-btn-sm am-fl am-padding-horizontal-xl">
+
+                        </div>
+                    </form>
+                    <hr>
+                    <hr>
+                    <hr>
+                    <p>
+                        © 2016 FYSCU , Fcoder 2.0 XJBG license.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="http://s.amazeui.org/assets/2.x/js/jquery.min.js"></script>
+<script type="text/javascript" src="http://cdn.amazeui.org/amazeui/2.4.2/js/amazeui.min.js"></script>
+</body>
+</html>

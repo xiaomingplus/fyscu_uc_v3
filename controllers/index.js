@@ -5,9 +5,9 @@
 'use strict';
 
 
-var Controller = {};
+var Index = {};
 
-Controller.index = function (req, res) {
+Index.index = function (req, res) {
     var appId = req.query.appId || req.query.appid || 0;
     var redirectUrl = req.query.callback;
     res.render('index.html', {
@@ -18,11 +18,11 @@ Controller.index = function (req, res) {
     });
 };
 
-Controller.error = function (req, res) {
+Index.error = function (req, res) {
     res.render('error.html',{'msg':'ceshi '});
 }
 
-Controller.debug = function(req,res){
+Index.debug = function(req,res){
 
     res.json(200,{
         'query':req.query,
@@ -32,4 +32,7 @@ Controller.debug = function(req,res){
     },'debug ok');
 }
 
-module.exports = Controller;
+Index.resetPassword = function(req,res){
+    res.render('findPw.html');
+}
+module.exports = Index;
