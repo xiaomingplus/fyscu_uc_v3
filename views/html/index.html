@@ -16,7 +16,7 @@
 <body>
 <div class="header">
     <div class="am-g">
-        <h1> FYUC </h1>
+        <h1> FYUC 3.0</h1>
 
     </div>
     <hr />
@@ -38,7 +38,7 @@
                     <form method="post" class="am-form" action="/access/login">
                         <input type="hidden" name="appId" value="{{appId}}" />
                         <input type="hidden" name="callback" value="{{callback}}" />
-                        <input type="number" name="account"  value="" placeholder="手机号">
+                        <input type="text" name="account"  value="" placeholder="手机号" pattern="[0-9]{11,11}">
                         <hr>
                         <input type="password" name="password"  value="" placeholder="密码">
                         <hr>
@@ -62,7 +62,7 @@
                     <form method="post" class="am-form" action="/access/reg">
                         <input type="hidden" name="appId" value="{{appId}}" />
                         <input type="hidden" name="callback" value="{{callback}}" />
-                        <input type="number" name="account"  value="" placeholder="手机号">
+                        <input type="text" name="account"  value="" placeholder="手机号" pattern="[0-9]{11,11}">
                         <hr>
                         <div class="am-input-group">
                             <input type="text" name="code" class="am-form-field" placeholder="短信验证码" autocomplete="off">
@@ -83,7 +83,7 @@
                     <hr>
                     <hr>
                     <p>
-                        © 2014 FYSCU , Fcoder 2.0 XJBG license.
+                        © 2016 FYSCU , Fcoder 2.0 XJBG license.
                     </p>
                 </div>
             </div>

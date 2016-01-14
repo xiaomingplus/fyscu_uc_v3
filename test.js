@@ -14,11 +14,5 @@ http.headers.appKey = '29322987bd616276e8d4da9754cb0903';
 var url = 'http://127.0.0.1:9528'
 
 
-//http.get(url+'/access/auth?appId=1000&token=e714921edcc0209226d7b434fc421f47&appKey=29322987bd616276e8d4da9754cb0903&account=18688124774',{}, function (e, r) {
-//   console.log(r.body);
-//});
 
-var url = 'ssssssdde';
-
-console.log(/\/\/(.*?)\//.exec(url));
 
