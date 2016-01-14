@@ -57,5 +57,6 @@ fyuc.getUserInfo = function (branch,cb) {
 }
 
 
+
 module.exports = fyuc.init;
 
