@@ -3,8 +3,7 @@ var http = require('../libs/httpAgent');
 var redis = require('../libs/redis');
 var aes128 = require('../libs/aes128');
 
-var esHost = 'http://121.41.85.236:9200';
-//var esHost = 'http://127.0.0.1:9200';
+var esHost = require('../config/config').params.ES_HOST;
 
 let app = {};
 

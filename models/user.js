@@ -2,8 +2,8 @@
 var async = require('async');
 var md5 =  require('../libs/aes128').md5;
 var http = require('../libs/httpAgent');
-var esHost = 'http://121.41.85.236:9200';
-//var esHost = 'http://127.0.0.1:9200';
+
+var esHost = require('../config/config').params.ES_HOST;
 
 
 let user = {};
