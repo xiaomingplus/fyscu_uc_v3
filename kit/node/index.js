@@ -57,3 +57,16 @@ fyuc.getUserInfo = function (branch,cb) {
 
 module.exports = fyuc.init;
 
+// USAGE
+//var fyuc = require('./index')(1000,'{appKey}');
+//
+//fyuc.processCallback({
+//    account:'18688124774',
+//    token:'c5d224579e296603cb1e4d30483e3842'
+//}, function (e, r) {
+//    if(!e){
+//        fyuc.getUserInfo('/contact/tel', function (ee, rr) {
+//            console.log(ee,rr);
+//        });
+//    }
+//});

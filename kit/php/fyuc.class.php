@@ -227,7 +227,7 @@ class httpAgent{
 
 ////// usage
 //////全局初始化一个实例
-////$r = new FYUC(1000,'29322987bd616276e8d4da9754cb0903');
+////$r = new FYUC(1000,'{your appKey}');
 ////
 //////使用loginUrl得到登录页面地址,或者直接跳转过去
 ////
