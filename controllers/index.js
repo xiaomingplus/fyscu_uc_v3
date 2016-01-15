@@ -33,6 +33,15 @@ Index.debug = function(req,res){
 }
 
 Index.resetPassword = function(req,res){
-    res.render('findPw.html');
+    var appId = req.query.appId || req.query.appid || 0;
+    var redirectUrl = req.query.callback;
+
+    res.render('findPw.html',{
+        'license':global.app.config.license,
+        'name': 'xiaobq',
+        'appId': appId,
+        'callback':redirectUrl
+    });
 }
+
 module.exports = Index;
