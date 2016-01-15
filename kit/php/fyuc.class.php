@@ -8,8 +8,8 @@
  */
 class FYUC
 {
-    const UC_HOST = 'http://127.0.0.1:9528';
-    //const UC_HOST = 'http://121.41.85.236:9528';
+
+    const UC_HOST = 'http://121.41.85.236:9528';
 
     private $_appId = null;
 
