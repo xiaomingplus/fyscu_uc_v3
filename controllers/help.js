@@ -8,7 +8,6 @@ let userModel = require('../models/user');
 var Controller = {};
 
 Controller.index = function (req, res) {
-
     res.html('help.html');
 };
 
