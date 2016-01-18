@@ -46,6 +46,9 @@ user.model = {
     }
 };
 
+/**
+ * 增加一个文档
+ */
 user.add = function (userIdentify,data,cb) {
     if(userIdentify && data){
         async.waterfall([
@@ -83,6 +86,9 @@ user.add = function (userIdentify,data,cb) {
     }
 };
 
+/**
+ * 覆盖整个文档
+ */
 user.set = function (userIdentify,data,cb) {
     if(userIdentify && data){
         async.waterfall([
@@ -107,6 +113,9 @@ user.set = function (userIdentify,data,cb) {
     }
 };
 
+/**
+ * 获取整个文档
+ */
 user.get = function (userIdentity, cb) {
     http.get(esHost+'/uc/users/'+userIdentity,{}, function (e, r) {
         if(e){
@@ -128,12 +137,18 @@ user.get = function (userIdentity, cb) {
     });
 }
 
+/**
+ * 删除这个文档
+ */
 user.del = function (userIdentity,cb) {
     http.del(esHost+'/uc/users/'+userIdentity, function (e, r) {
         cb(e,r?r.body:null);
     });
 }
 
+/**
+ * 验证 _account 数据，登录专用
+ */
 user.auth = function(account,password,cb){
     if(account && password){
         user.match('/_account/fyuc/u',account, function (e, r) {
@@ -158,6 +173,9 @@ user.auth = function(account,password,cb){
     }
 };
 
+/**
+ * 全匹配查找
+ */
 user.match = function (dPath, value, cb) {
     if(typeof value == 'object'){
         value = JSON.stringify(value);
@@ -182,6 +200,9 @@ user.match = function (dPath, value, cb) {
     });
 }
 
+/**
+ * 从指定路径里读取数据
+ */
 user.branch = function (userIdentity, dPath, cb) {
     user.get(userIdentity, function (e, r) {
         if(!e){
@@ -201,6 +222,9 @@ user.branch = function (userIdentity, dPath, cb) {
     });
 };
 
+/**
+ * 从现有数组里剔除数据
+ */
 user.delBranch = function (userIdentity, dPath, cb) {
     user.get(userIdentity, function (e, r) {
         if(!e){
@@ -237,99 +261,9 @@ user.delBranch = function (userIdentity, dPath, cb) {
     });
 }
 
-user.update = function(userIdentity,dPath,dData,cb){
-    user.get(userIdentity, function (e, r) {
-        if(!e){
-            let dArr = dPath.split('/');
-            let _tempNode = r;
-            let _parentNode = null;
-            let _parentKey = null;
-            let sig = true;
-            let errorMsg = '';
-            while(dArr.length > 1){
-                dArr.shift();
-                if(dArr[0] != ''){
-                    _parentNode = _tempNode;
-                    _parentKey = dArr[0];
-                    _tempNode = _tempNode[dArr[0]];
-                    if(_tempNode == undefined){
-                        errorMsg += '不存在这个数据';
-                        sig = false;
-                        break;
-                    }
-                }
-            }
-            if(Array.isArray(_tempNode)){
-                //数组类型不能set
-                errorMsg += '数组类型不能set';
-                sig = false;
-            }
-            
-            if(sig && (typeof _tempNode == typeof dData)){
-                _parentNode[_parentKey] = dData;
-                user.set(userIdentity,r, function (e1, r1) {
-                    if(!e1){
-                        cb(null,r);
-                    }else{
-                        cb(e1,r1);
-                    }
-                });
-            }else{
-                cb(400,'数据结构不允许,'+errorMsg);
-            }
-        }else{
-            cb(e,r);
-        }
-    });
-}
-
-user.append = function (userIdentity, dPath, dData, cb) {
-    user.get(userIdentity, function (e, r) {
-        if(!e){
-            let dArr = dPath.split('/');
-            let _modelNode = user.model;
-            let _tempNode = r;
-            let _parentNode = null;
-            let _parentKey = null;
-            let sig = true;
-            let errorMsg = '';
-            while(dArr.length > 1){
-                dArr.shift();
-                if(dArr[0] != ''){
-                    _modelNode = _modelNode[dArr[0]];
-                    _parentNode = _tempNode;
-                    _parentKey = dArr[0];
-                    _tempNode = _tempNode[dArr[0]];
-                    if(_modelNode == undefined){
-                        errorMsg += '不存在这个数据';
-                        sig = false;
-                        break;
-                    }
-                }
-            }
-
-            if(sig &&Array.isArray(_modelNode) && (typeof _modelNode[0] == typeof dData)){
-                if(_parentNode[_parentKey]==undefined){
-                    _parentNode[_parentKey] = [];
-                }
-                _parentNode[_parentKey].push(dData);
-
-                user.set(userIdentity,r, function (e1, r1) {
-                    if(!e1){
-                        cb(null,r);
-                    }else{
-                        cb(e1,r1);
-                    }
-                });
-            }else{
-                cb(400,'数据结构不允许,'+errorMsg);
-            }
-        }else{
-            cb(e,r);
-        }
-    });
-}
-
+/**
+ * 修改现有数据的值
+ */
 user.edit = function(userIdentity,dPath,dData,cb){
     user.get(userIdentity, function (e, r) {
         if(!e){
@@ -382,6 +316,9 @@ user.edit = function(userIdentity,dPath,dData,cb){
     });
 }
 
+/**
+ * 向现有数组里push数据
+ */
 user.append = function (userIdentity, dPath, dData, cb) {
     user.get(userIdentity, function (e, r) {
         if(!e){
@@ -429,8 +366,9 @@ user.append = function (userIdentity, dPath, dData, cb) {
     });
 }
 
+user.setCookie = function (userIdentify, data, cb) {
+    http.put(esHost+'/uc/users/'+userIdentify)
+}
+
 module.exports = user;
 
-user.append(18688124774,'/cookie',{}, function (e, r) {
-    console.log(e,r);
-});
