@@ -75,13 +75,13 @@ access.reg = function (req, res) {
                         'tel_note': '注册'
                     }]
                 },
-                'accounts':{
+                '_account':{
                     'fyuc':[{
                         'fyuc_u':account,
                         'fyuc_p':password
                     }]
                 },
-                'preferences':{
+                'preference':{
                     'apps':[
                         appId
                     ]
@@ -157,7 +157,7 @@ access.passwd = function(req,res){
     if (redirectUrl && account && password && Number.parseInt(appId)) {
         if(code=='123456' || code == req.session.code){
             password = md5('' + account + password);
-            userModel.edit(account,'/account/fyuc/0/p',password, function (e, r) {
+            userModel.edit(account,'/_account/fyuc/0/p',password, function (e, r) {
                 if(!e){
                     res.redirect('/?appid='+appId+'&callback='+encodeURIComponent(redirectUrl));
                 }else{
