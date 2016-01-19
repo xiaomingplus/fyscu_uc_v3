@@ -165,7 +165,8 @@ access.reg = function (req, res) {
                         }
                     });
                 } else{
-
+                    console.log(e);
+                    res.render('error.html',{'msg':'数据库错误'});
                 }
             });
         }else{
