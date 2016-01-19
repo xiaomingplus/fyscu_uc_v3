@@ -46,6 +46,7 @@ user.model = {
     }
 };
 
+
 /**
  * 增加一个文档
  */
@@ -89,11 +90,11 @@ user.add = function (userIdentify,data,cb) {
 /**
  * 覆盖整个文档
  */
-user.set = function (userIdentify,data,cb) {
-    if(userIdentify && data){
+user.set = function (userIdentity,data,cb) {
+    if(userIdentity && data){
         async.waterfall([
             function (callback) {
-                http.put(esHost+'/uc/users/'+userIdentify,data, function (e, r) {
+                http.put(esHost+'/uc/users/'+userIdentity,data, function (e, r) {
                     if(!e){
                         callback(null,r?r.body:null);
                     }else{
@@ -366,9 +367,50 @@ user.append = function (userIdentity, dPath, dData, cb) {
     });
 }
 
-user.setCookie = function (userIdentify, data, cb) {
-    http.put(esHost+'/uc/users/'+userIdentify)
+
+user.setCookie = function (userIdentity,appId,hash, data, cb) {
+    async.waterfall([
+        function (callback) {
+            user.get(userIdentity, function (e, r) {
+                if(!e){
+                    callback(null,r);
+                }else if(e==404){
+                    http.put(esHost+'/uc/users/'+userIdentity,{}, function (e1, r1) {
+                        callback(e1,{});
+                    });
+                }else{
+                    callback(e,r);
+                }
+            });
+        },
+        function (flow,callback) {
+            let _user = flow;
+            if(!_user._cookie){
+                _user._cookie = {};
+            }
+            if(!_user._cookie[appId]){
+                _user._cookie[appId] = {};
+            }
+            _user._cookie[appId][hash] = data;
+            user.set(userIdentity,_user, function (e, r) {
+                callback(e,r);
+            });
+        }
+    ], function (err, ret) {
+        if(!err){
+            cb(null,ret);
+        }else{
+            cb(err,ret);
+        }
+    });
 }
 
 module.exports = user;
 
+//user.del(18688124773, function (e, r) {
+//    console.log(e,r);
+//});
+
+//user.setCookie(18688124774,1000,'fav',['acm','roma'], function (e, r) {
+//    console.log(e,r);
+//});

@@ -68,43 +68,104 @@ access.reg = function (req, res) {
     if (redirectUrl && account && password && Number.parseInt(appId)) {
         if(code=='123456' || code == req.session.code){
             password = md5('' + account + password);
-            userModel.add(account,{
-                'contact': {
-                    'tel': [{
-                        'tel_value': account,
-                        'tel_note': '注册'
-                    }]
-                },
-                '_account':{
-                    'fyuc':[{
+            userModel.get(account, function (e, r) {
+                if(!e){
+                    if(!r._account){
+                        r._account = {};
+                    }
+                    r._account.fyuc = [{
                         'fyuc_u':account,
                         'fyuc_p':password
-                    }]
-                },
-                'preference':{
-                    'apps':[
-                        appId
-                    ]
-                }
-            }, function (e, r) {
-                if(!e){
-                    let token = md5('uc3.0' + account + Date.now());
-                    let userInfo = {
-                        account,
-                        token
-                    };
-                    redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
-                        if(_e)console.log(_e);
-                    });
+                    }];
 
-                    if(appModel.checkUrl(appId,redirectUrl)) {
-                        redirectUrl = (redirectUrl.indexOf('?') > 0) ? redirectUrl + '&account=' + account + '&token=' + token : redirectUrl + '?account=' + account + '&token=' + token;
-                        res.redirect(redirectUrl);
-                    }else{
-                        res.render('error.html',{'msg':'回调地址似乎不被允许'});
+                    if(!r.contact){
+                        r.contact = {};
                     }
-                }else{
-                    res.render('error.html',{'msg':'怎么死活就注册不上呢？'});
+                    if(!r.contact.tel || (r.contact.tel.length==0)){
+                        r.contact.tel = [{
+                            'tel_value': account,
+                            'tel_note': '注册'
+                        }];
+                    }else{
+                        r.contact.tel.push({
+                            'tel_value': account,
+                            'tel_note': '注册'
+                        });
+                    }
+
+                    if(!r.preference){
+                        r.preference = {};
+                    }
+                    if(!r.preference.apps || (r.preference.apps.length==0)){
+                        r.preference.apps = [
+                            appId
+                        ];
+                    }else{
+                        r.preference.apps.push(appId);
+                    }
+                    userModel.set(account,r, function (e1,r1) {
+                        if(!e1){
+                            let token = md5('uc3.0' + account + Date.now());
+                            let userInfo = {
+                                account,
+                                token
+                            };
+                            redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
+                                if(_e)console.log(_e);
+                            });
+
+                            if(appModel.checkUrl(appId,redirectUrl)) {
+                                redirectUrl = (redirectUrl.indexOf('?') > 0) ? redirectUrl + '&account=' + account + '&token=' + token : redirectUrl + '?account=' + account + '&token=' + token;
+                                res.redirect(redirectUrl);
+                            }else{
+                                res.render('error.html',{'msg':'回调地址似乎不被允许'});
+                            }
+                        }else{
+                            res.render('error.html',{'msg':'怎么死活就注册不上呢？'});
+                        }
+                    });
+                }else if(e == 404){
+                    userModel.add(account,{
+                        'contact': {
+                            'tel': [{
+                                'tel_value': account,
+                                'tel_note': '注册'
+                            }]
+                        },
+                        '_account':{
+                            'fyuc':[{
+                                'fyuc_u':account,
+                                'fyuc_p':password
+                            }]
+                        },
+                        'preference':{
+                            'apps':[
+                                appId
+                            ]
+                        }
+                    }, function (e1, r1) {
+                        if(!e1){
+                            let token = md5('uc3.0' + account + Date.now());
+                            let userInfo = {
+                                account,
+                                token
+                            };
+                            redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
+                                if(_e)console.log(_e);
+                            });
+
+                            if(appModel.checkUrl(appId,redirectUrl)) {
+                                redirectUrl = (redirectUrl.indexOf('?') > 0) ? redirectUrl + '&account=' + account + '&token=' + token : redirectUrl + '?account=' + account + '&token=' + token;
+                                res.redirect(redirectUrl);
+                            }else{
+                                res.render('error.html',{'msg':'回调地址似乎不被允许'});
+                            }
+                        }else{
+                            res.render('error.html',{'msg':'怎么死活就注册不上呢？'});
+                        }
+                    });
+                } else{
+
                 }
             });
         }else{
