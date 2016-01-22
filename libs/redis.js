@@ -4,10 +4,10 @@ var redis = require('redis');
 
 var REDIS = {};
 
-REDIS.master = redis.createClient(6379, '121.41.85.236', {});
+REDIS.master = redis.createClient(6379, '127.0.0.1', {});
 //REDIS.master = redis.createClient(6379, '10.168.29.182', {});
 
-REDIS.slave = redis.createClient(6379, '121.41.85.236', {});
+REDIS.slave = redis.createClient(6379, '127.0.0.1', {});
 //REDIS.slave = redis.createClient(6380, '10.171.202.66', {});
 
 
