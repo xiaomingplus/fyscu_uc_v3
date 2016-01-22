@@ -1,7 +1,8 @@
 'use strict';
 
 let async = require('async');
-let redis = global.app.libs.redis;
+var redis = require('../libs/redis');
+
 let md5 = global.app.libs.tools.md5;
 
 let userModel = require('../models/user');

@@ -5,7 +5,7 @@
 let async = require('async');
 let userModel = require('../models/user');
 let appModel = require('../models/app');
-let redis = global.app.libs.redis;
+var redis = require('../libs/redis');
 
 let Api = {};
 
