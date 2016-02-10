@@ -10,7 +10,7 @@
     </style>
 </head>
 <body>
- <a href="http://127.0.0.1:9528/?appid=1000&callback=http://127.0.0.1:9528/help/demo">go to FYUC for login</a>
+ <a href="http://127.0.0.1:9528/?appid=1&callback=http://127.0.0.1:9528/help/demo">go to FYUC for login</a>
 <p id="result">
 
 </p>
@@ -23,7 +23,7 @@
 </p>
 
 </body>
-<script type="text/javascript" src="http://s.amazeui.org/assets/2.x/js/jquery.min.js"></script>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
 <script>
 
     var search = window.location.search;
@@ -46,7 +46,7 @@
     $('#accounts').click(function(){
         $.ajax({
             method: "GET",
-            url:'/help/poxy?t=accounts',
+            url:'/help/poxy?t=_account',
             success: function (data) {
                 $('#data').html(JSON.stringify(data));
             }
@@ -55,7 +55,7 @@
     $('#preferences').click(function(){
         $.ajax({
             method: "GET",
-            url:'/help/poxy?t=preferences',
+            url:'/help/poxy?t=preference',
             success: function (data) {
                 $('#data').html(JSON.stringify(data));
             }

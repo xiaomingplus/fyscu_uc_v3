@@ -75,8 +75,8 @@ access.reg = function (req, res) {
                         r._account = {};
                     }
                     r._account.fyuc = [{
-                        'fyuc_u':account,
-                        'fyuc_p':password
+                        'u':account,
+                        'p':password
                     }];
 
                     if(!r.contact){
@@ -84,13 +84,13 @@ access.reg = function (req, res) {
                     }
                     if(!r.contact.tel || (r.contact.tel.length==0)){
                         r.contact.tel = [{
-                            'tel_value': account,
-                            'tel_note': '注册'
+                            'value': account,
+                            'note': '注册'
                         }];
                     }else{
                         r.contact.tel.push({
-                            'tel_value': account,
-                            'tel_note': '注册'
+                            'value': account,
+                            'note': '注册'
                         });
                     }
 
@@ -129,14 +129,14 @@ access.reg = function (req, res) {
                     userModel.add(account,{
                         'contact': {
                             'tel': [{
-                                'tel_value': account,
-                                'tel_note': '注册'
+                                'value': account,
+                                'note': '注册'
                             }]
                         },
                         '_account':{
                             'fyuc':[{
-                                'fyuc_u':account,
-                                'fyuc_p':password
+                                'u':account,
+                                'p':password
                             }]
                         },
                         'preference':{

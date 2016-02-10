@@ -162,7 +162,6 @@ user.auth = function(account,password,cb){
                         cb(402,'授权失败');
                     }
                 }else{
-
                     cb(404,'account not found');
                 }
             }else{
@@ -183,7 +182,6 @@ user.match = function (dPath, value, cb) {
     }
     let term = {};
     term[dPath.split('/').join('.').substr(1)] = value;
-
     http.get(esHost+'/uc/users/_search',{
         "version":true,
         "query":{
@@ -407,10 +405,15 @@ user.setCookie = function (userIdentity,appId,hash, data, cb) {
 
 module.exports = user;
 
-//user.del(18688124773, function (e, r) {
+//user.del(18688124774, function (e, r) {
 //    console.log(e,r);
 //});
 
 //user.setCookie(18688124774,1000,'fav',['acm','roma'], function (e, r) {
+//    console.log(e,r);
+//});
+
+
+//user.auth('18688124774','2603891', function (e, r) {
 //    console.log(e,r);
 //});

@@ -225,23 +225,23 @@ class httpAgent{
 }
 
 
-////// usage
-//////全局初始化一个实例
-////$r = new FYUC(1000,'{your appKey}');
-////
-//////使用loginUrl得到登录页面地址,或者直接跳转过去
-////
-//////模拟回调
-////$_GET = array(
-////    'account'=>'18688124774',
-////    'token'=>'c5d224579e296603cb1e4d30483e3842'
-////);
-////
-//////回调url里面掉用这个
-////$r->processCallback();
+//// usage
+////全局初始化一个实例
+//$r = new FYUC(1,'97ba7327888ff2d4ce785a470b6c3176');
+//
+////使用loginUrl得到登录页面地址,或者直接跳转过去
+//
+////模拟回调
+//$_GET = array(
+//    'account'=>'18688124774',
+//    'token'=>'431244575d870083cd75c9873a660b5c'
+//);
+//
+////回调url里面掉用这个
+//$r->processCallback();
 //
 //
 ////使用各种方法
 //var_dump($r->getUserInfo('/contact/tel'));
-//var_dump($r->getUserInfo('/contact/email'));
+
 

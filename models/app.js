@@ -13,6 +13,7 @@ app.model = function () {
     this.appKey = undefined;
     this.status = 1;
     this.domain = '';
+    this.role = '';
     this.permission = [];
 };
 
@@ -33,7 +34,6 @@ app.init = function () {
         }
     });
 };
-app.init();
 
 app.create = function(name,domain,cb){
     redis.incrby(['ai:appId',1], function (e, r) {
@@ -145,3 +145,4 @@ app.checkUrl = function (appId,url) {
 }
 
 module.exports = app;
+
