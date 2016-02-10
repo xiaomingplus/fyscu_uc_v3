@@ -58,15 +58,20 @@ fyuc.getUserInfo = function (branch,cb) {
 module.exports = fyuc.init;
 
 // USAGE
-//var fyuc = require('./index')(1000,'{appKey}');
+// 使用以下方式初始化fyuc，参数为 appId  、  appKey
+// var fyuc = require('./index')(1000,'{appKey}');
 //
-//fyuc.processCallback({
-//    account:'18688124774',
-//    token:'c5d224579e296603cb1e4d30483e3842'
-//}, function (e, r) {
+// 生成一个登录链接，替换你原来的登录地址，注意你的回调地址
+// var loginUrl = fyuc.loginUrl('{回调地址}');
+//
+// 针对你提供的回调地址，你需要实现对应的回调逻辑，
+// 参数会采取GET方法传递，所以你要将req.query作为第一个参数传进去
+// processCallback 会自动帮你验证token合法性，
+// fyuc.processCallback(req.query, function (e, r) {
 //    if(!e){
+//        //之后就可以获取数据了，
 //        fyuc.getUserInfo('/contact/tel', function (ee, rr) {
 //            console.log(ee,rr);
 //        });
 //    }
-//});
+// });

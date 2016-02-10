@@ -36,7 +36,7 @@ class FYUC
      * @param bool|true $redirect 是否直接跳转,false时将返回 login_url
      * @return string url
      */
-    public function loginUrl($callback,$redirect = true){
+    public function loginUrl($callback,$redirect = false){
         $url = self::UC_HOST.'/?appId='.$this->_appId.'&callback='.urlencode($callback);
         if($redirect){
             header('location:'.$url);
@@ -227,10 +227,10 @@ class httpAgent{
 
 //// usage
 ////全局初始化一个实例
-//$r = new FYUC(1,'97ba7327888ff2d4ce785a470b6c3176');
+// $r = new FYUC(1,'97ba7327888ff2d4ce785a470b6c3176');
 //
-////使用loginUrl得到登录页面地址,或者直接跳转过去
-//
+////使用loginUrl得到登录页面地址,或者直接跳转过去,
+// $loginUrl = $r->loginUrl('{回调地址}');
 ////模拟回调
 //$_GET = array(
 //    'account'=>'18688124774',
