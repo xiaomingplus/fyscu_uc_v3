@@ -33,3 +33,12 @@ var url = 'http://127.0.0.1:9528';
 //    console.log(e,r.body?r.body:r);
 //
 //});
+http.get('http://127.0.0.1:9200/wendao/items/_search',{
+    "query": {
+        "match": {
+            "tags": "javascript"
+        }
+    }
+}, function (e, r) {
+    console.log(r.body);
+});
