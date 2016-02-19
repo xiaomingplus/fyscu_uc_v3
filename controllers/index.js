@@ -8,7 +8,7 @@
 var Index = {};
 
 Index.index = function (req, res) {
-    var appId = req.query.appId || req.query.appid || 0;
+    var appId = req.query.appId || req.query['appid'] || 0;
     var redirectUrl = req.query.callback;
     res.render('index.html', {
         'license':global.app.config.license,
@@ -20,7 +20,7 @@ Index.index = function (req, res) {
 
 Index.error = function (req, res) {
     res.render('error.html',{'msg':'ceshi '});
-}
+};
 
 Index.debug = function(req,res){
 
@@ -30,10 +30,10 @@ Index.debug = function(req,res){
         'method':req.method,
         'headers':req.headers
     },'debug ok');
-}
+};
 
 Index.resetPassword = function(req,res){
-    var appId = req.query.appId || req.query.appid || 0;
+    var appId = req.query.appId || req.query['appid'] || 0;
     var redirectUrl = req.query.callback;
 
     res.render('findPw.html',{
@@ -42,6 +42,6 @@ Index.resetPassword = function(req,res){
         'appId': appId,
         'callback':redirectUrl
     });
-}
+};
 
 module.exports = Index;

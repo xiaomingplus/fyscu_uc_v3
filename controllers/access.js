@@ -20,7 +20,7 @@ access.login = function (req, res) {
     let password = req.body.password;
     let appId = req.body.appId;
     let redirectUrl = req.body.callback;
-    let time = parseInt(Date.now());
+    //let time = parseInt(Date.now());
     if (redirectUrl && Number.parseInt(appId) && account && password) {
         userModel.auth(account,password, function (e, r) {
            if(!e){
@@ -30,7 +30,9 @@ access.login = function (req, res) {
                    token
                };
                redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
-                   if(_e)console.log(_e);
+                   if(_e){
+                       console.log(_e,_r);
+                   }
                });
                if(appModel.checkUrl(appId,redirectUrl)) {
                    redirectUrl = (redirectUrl.indexOf('?')>0)?redirectUrl+'&account='+account+'&token='+token:redirectUrl+'?account='+account+'&token='+token;
@@ -65,7 +67,7 @@ access.reg = function (req, res) {
     let password = req.body.password;
     let code = req.body.code;
     let redirectUrl = req.body.callback;
-    let time = parseInt(Date.now());
+    //let time = parseInt(Date.now());
     if (redirectUrl && account && password && Number.parseInt(appId)) {
         if(code=='123456' || code == req.session.code){
             password = md5('' + account + password);
@@ -106,13 +108,16 @@ access.reg = function (req, res) {
                     }
                     userModel.set(account,r, function (e1,r1) {
                         if(!e1){
+                            r1 = null;
                             let token = md5('uc3.0' + account + Date.now());
                             let userInfo = {
                                 account,
                                 token
                             };
                             redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
-                                if(_e)console.log(_e);
+                                if(_e){
+                                    console.log(_e,_r);
+                                }
                             });
 
                             if(appModel.checkUrl(appId,redirectUrl)) {
@@ -146,13 +151,16 @@ access.reg = function (req, res) {
                         }
                     }, function (e1, r1) {
                         if(!e1){
+                            r1 = null;
                             let token = md5('uc3.0' + account + Date.now());
                             let userInfo = {
                                 account,
                                 token
                             };
                             redis.saveExpireObj('session:' + account, userInfo, 3600 * 24 * 30, function (_e, _r) {
-                                if(_e)console.log(_e);
+                                if(_e){
+                                    console.log(_e,_r);
+                                }
                             });
 
                             if(appModel.checkUrl(appId,redirectUrl)) {
@@ -208,7 +216,7 @@ access.auth = function(req,res){
             res.json(err,ret);
         }
     });
-}
+};
 
 access.passwd = function(req,res){
     let appId = req.body.appId;
@@ -216,7 +224,7 @@ access.passwd = function(req,res){
     let password = req.body.password;
     let code = req.body.code;
     let redirectUrl = req.body.callback;
-    let time = parseInt(Date.now());
+    //let time = parseInt(Date.now());
     if (redirectUrl && account && password && Number.parseInt(appId)) {
         if(code=='123456' || code == req.session.code){
             password = md5('' + account + password);
@@ -233,7 +241,7 @@ access.passwd = function(req,res){
     }else {
         res.render('error.html',{'msg':'大师兄，callback、account、password和appId被二师兄抓走了。  '});
     }
-}
+};
 
 module.exports = access;
 

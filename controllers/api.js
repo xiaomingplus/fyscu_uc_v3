@@ -16,11 +16,11 @@ Api.index = function(req,res){
     }else{
         res.json(404,'method not found');
     }
-}
+};
 
 Api.get = function(req,res){
-    let appId = req.headers.appid;
-    let appKey = req.headers.appkey;
+    let appId = req.headers['appid'];
+    let appKey = req.headers['appkey'];
     let account = req.headers.account;
     let token = req.headers.token;
     let dPath = req.body.path?req.body.path:'';
@@ -64,11 +64,11 @@ Api.get = function(req,res){
             res.json(200,ret);
         }
     });
-}
+};
 
 Api.post = function(req,res){
-    let appId = req.headers.appid;
-    let appKey = req.headers.appkey;
+    let appId = req.headers['appid'];
+    let appKey = req.headers['appkey'];
     let account = req.headers.account;
     let token = req.headers.token;
     let dPath = req.body.path;
@@ -113,11 +113,11 @@ Api.post = function(req,res){
             res.json(200,ret);
         }
     });
-}
+};
 
 Api.put = function(req,res){
-    let appId = req.headers.appid;
-    let appKey = req.headers.appkey;
+    let appId = req.headers['appid'];
+    let appKey = req.headers['appkey'];
     let account = req.headers.account;
     let token = req.headers.token;
     let dPath = req.body.path;
@@ -162,11 +162,11 @@ Api.put = function(req,res){
             res.json(200,ret);
         }
     });
-}
+};
 
 Api.delete = function(req,res){
-    let appId = req.headers.appid;
-    let appKey = req.headers.appkey;
+    let appId = req.headers['appid'];
+    let appKey = req.headers['appkey'];
     let account = req.headers.account;
     let token = req.headers.token;
     let dPath = req.body.path?req.body.path:'';
@@ -206,13 +206,13 @@ Api.delete = function(req,res){
             res.json(200,ret);
         }
     });
-}
+};
 
 Api._filter = function (account, token, cb) {
     redis.getObj('session:'+account, function (e, r) {
         cb(e,r);
     });
-}
+};
 
 
 module.exports = Api;
