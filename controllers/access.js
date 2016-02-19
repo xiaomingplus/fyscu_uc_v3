@@ -254,6 +254,10 @@ access.passwd = function(req,res){
     }
 };
 
+access.sms = function (req,res) {
+    //todo
+};
+
 module.exports = access;
 
 /**
