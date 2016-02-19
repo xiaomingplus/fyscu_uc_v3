@@ -15,7 +15,7 @@ httpAgent.head = function (path, cb) {
         url: path,
         method: 'head',
         headers: httpAgent.headers
-    }
+    };
     request(options, function (e, r) {
         cb(e, r ? r.statusCode : 404);
     });
@@ -40,7 +40,7 @@ httpAgent.post = function (path, data, cb) {
         method: 'post',
         headers: httpAgent.headers,
         json: data
-    }
+    };
 
     request(options, function (e, r) {
         cb(e, r);
@@ -53,7 +53,7 @@ httpAgent.put = function (path, data, cb) {
         method: 'put',
         headers: httpAgent.headers,
         json: data
-    }
+    };
     request(options, function (e, r) {
         cb(e, r);
     });
@@ -65,11 +65,12 @@ httpAgent.patch = function (path, data, cb) {
         method: 'patch',
         headers: httpAgent.headers,
         json: data
-    }
+    };
     request(options, function (e, r) {
         cb(e, r);
     });
 };
+
 
 httpAgent.get = function (path, data, cb) {
     //path += '?';
@@ -81,7 +82,7 @@ httpAgent.get = function (path, data, cb) {
         method: 'get',
         headers: httpAgent.headers,
         json: data
-    }
+    };
     request(options, function (e, r) {
         cb(e, r);
     });
@@ -92,7 +93,7 @@ httpAgent.del = function (path, cb) {
         url: path,
         method: 'delete',
         headers: httpAgent.headers
-    }
+    };
     request(options, function (e, r) {
         cb(e, r);
     });
