@@ -156,6 +156,7 @@ user.auth = function(account,password,cb){
             if(!e){
                 if(r.count > 0){
                     let fyuc = (r.result && r.result.length)?r.result[0]._source._account.fyuc[0]:{};
+                    console.log(fyuc.p , md5(''+account+password));
                     if(fyuc.p == md5(''+account+password)){
                         cb(null,r.result[0]);
                     }else{
@@ -414,6 +415,6 @@ module.exports = user;
 //});
 
 
-//user.auth('18688124774','2603891', function (e, r) {
+//user.auth('18688124774','lanhao2603891', function (e, r) {
 //    console.log(e,r);
 //});

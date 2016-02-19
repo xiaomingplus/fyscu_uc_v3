@@ -90,6 +90,13 @@ access.reg = function (req, res) {
                             'note': '注册'
                         }];
                     }else{
+                        //去重
+                        for(let k in r.contact.tel){
+                            if(r.contact.tel[k].value == account){
+                                r.contact.tel.splice(k,1);
+                            }
+                        }
+
                         r.contact.tel.push({
                             'value': account,
                             'note': '注册'
@@ -100,10 +107,14 @@ access.reg = function (req, res) {
                         r.preference = {};
                     }
                     if(!r.preference.apps || (r.preference.apps.length==0)){
-                        r.preference.apps = [
-                            appId
-                        ];
+                        r.preference.apps = [];
+                        r.preference.apps.push(appId);
                     }else{
+                        for(let k in r.preference.apps){
+                            if(r.preference.apps[k] == appId){
+                                r.preference.apps.splice(k,1);
+                            }
+                        }
                         r.preference.apps.push(appId);
                     }
                     userModel.set(account,r, function (e1,r1) {
@@ -249,3 +260,4 @@ module.exports = access;
  * Change Log
  * 1     init
  */
+
