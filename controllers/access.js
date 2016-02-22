@@ -256,6 +256,8 @@ access.passwd = function(req,res){
 
 access.sms = function (req,res) {
     //todo
+    let smsKey = require('../config/config').params.smskey;
+    let url = 'http://utf8.sms.webchinese.cn/?Uid=lanhao&Key=&smsMob=' + tel + '&smsText=【飞扬俱乐部】验证码 ' + code + ' 。';
 };
 
 module.exports = access;
