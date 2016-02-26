@@ -4,7 +4,7 @@ let async = require('async');
 var redis = require('../libs/redis');
 
 let md5 = global.app.libs.tools.md5;
-
+let http = require('../libs/httpAgent');
 let userModel = require('../models/user');
 let appModel = require('../models/app');
 
@@ -256,8 +256,26 @@ access.passwd = function(req,res){
 
 access.sms = function (req,res) {
     //todo
+    let tel = req.body.tel;
     let smsKey = require('../config/config').params.smskey;
-    let url = 'http://utf8.sms.webchinese.cn/?Uid=lanhao&Key=&smsMob=' + tel + '&smsText=【飞扬俱乐部】验证码 ' + code + ' 。';
+    let code = '';
+    for(let i=0;i<4;i++)
+    {
+        code += Math.floor(Math.random()*10);
+    }
+    let url = 'http://utf8.sms.webchinese.cn/?Uid=lanhao&Key='+smsKey+'&smsMob=' + tel + '&smsText=验证码 ' + code + ' 。';
+    let clientHash = md5(JSON.stringify(req.headers));
+    redis.getValue('SMS_CACHE_'+clientHash, function (e, r) {
+        if(!e && r){
+            res.json(423,{},'请求过于频繁，功能被锁定');
+        }else{
+            redis.setCache('SMS_CACHE_'+clientHash,tel+code,60, function (e, r) {
+                http.get(url,{}, function (e, r) {
+                    res.json(200,{});
+                });
+            });
+        }
+    });
 };
 
 module.exports = access;
