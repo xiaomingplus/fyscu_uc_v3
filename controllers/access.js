@@ -255,7 +255,6 @@ access.passwd = function(req,res){
 };
 
 access.sms = function (req,res) {
-    //todo
     let tel = req.body.tel;
     let smsKey = require('../config/config').params.smskey;
     let code = '';
@@ -271,6 +270,7 @@ access.sms = function (req,res) {
         }else{
             redis.setCache('SMS_CACHE_'+clientHash,tel+code,60, function (e, r) {
                 http.get(url,{}, function (e, r) {
+                    req.session.code = code;
                     res.json(200,{});
                 });
             });

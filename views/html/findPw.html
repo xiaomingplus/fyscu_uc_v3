@@ -31,7 +31,7 @@
                     <form method="post" class="am-form" action="/access/passwd">
                         <input type="hidden" name="appId" value="{{appId}}" />
                         <input type="hidden" name="callback" value="{{callback}}" />
-                        <input type="text" name="account"  value="" placeholder="手机号" pattern="[0-9]{11,11}">
+                        <input  id="smsTarget" type="text" name="account"  value="" placeholder="手机号" pattern="[0-9]{11,11}">
                         <hr>
                         <div class="am-input-group">
                             <input type="text" name="code" class="am-form-field" placeholder="短信验证码" autocomplete="off">
@@ -61,5 +61,6 @@
 </div>
 <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="http://cdn.amazeui.org/amazeui/2.5.2/js/amazeui.min.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
 </body>
 </html>

@@ -160,17 +160,17 @@ user.auth = function(account,password,cb){
                     if(fyuc.p == md5(''+account+password)){
                         cb(null,r.result[0]);
                     }else{
-                        cb(402,'授权失败');
+                        cb(402,'授权失败,密码错误');
                     }
                 }else{
-                    cb(404,'account not found');
+                    cb(404,'帐号不存在');
                 }
             }else{
                 cb(e,r);
             }
         });
     }else{
-        cb(403,'授权失败');
+        cb(403,'授权失败，缺少参数');
     }
 };
 
