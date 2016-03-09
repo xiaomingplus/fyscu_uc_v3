@@ -80,7 +80,7 @@ class HttpClient
         curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, "POST");
         return curl_exec($this->ch);
     }
-
+    //...
 
 }
 /*
