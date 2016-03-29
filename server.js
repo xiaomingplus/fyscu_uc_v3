@@ -2,6 +2,11 @@
  * Created by lanhao on 15/5/17.
  */
 'use strict';
+
+require('pmx').init({
+    http : true
+});
+
 //引入配置文件
 var config = require('./config/config');
 
