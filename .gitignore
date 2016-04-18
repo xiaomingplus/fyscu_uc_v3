@@ -1,6 +1,5 @@
-/config/config.js
 .idea/*
-
+config/config.js.bak
 test.js
 node_modules/*
 kit/php/.idea/*
