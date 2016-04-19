@@ -53,8 +53,8 @@ class FYUC
         $this->_token = $_GET['token'];
         if($this->_account && $this->_token){
             $url = self::UC_HOST.'/access/auth?account='.$this->_account.'&token='.$this->_token.'&appId='.$this->_appId.'&appKey='.$this->_appKey;
-            $isLogin = httpAgent::GET($url,array(),array());
-            if($isLogin){
+            $isLoginCode = httpAgent::GET($url,array(),array())->code;
+            if($isLoginCode == 200 ){
                 $this->_http_headers['account'] = $this->_account;
                 $this->_http_headers['token'] = $this->_token;
                 return true;
@@ -141,7 +141,7 @@ class httpAgent{
         $output = curl_exec($ch);
         curl_close($ch);
 
-        return $output;
+        return json_decode($output);
     }
 
     public static function POST($url,$headers = array(),$data = array()){
@@ -243,5 +243,3 @@ class httpAgent{
 //
 ////使用各种方法
 //var_dump($r->getUserInfo('/contact/tel'));
-
-
